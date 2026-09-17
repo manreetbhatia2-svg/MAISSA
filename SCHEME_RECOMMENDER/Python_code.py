@@ -1,0 +1,292 @@
+import json
+
+
+# ==================================================
+# LOAD SCHEME DATA
+# ==================================================
+
+with open("schemes.json", "r") as file:
+    data = json.load(file)
+
+schemes = data["schemes"]
+
+
+# ==================================================
+# CHECK INDIVIDUAL SCHEME
+# ==================================================
+
+def check_scheme(scheme, project_type, cost, income, education_status):
+
+    # Check income
+    if income > scheme["income_limit"]:
+        return False
+
+    # Check project type
+    if project_type not in scheme["project_type"]:
+        return False
+
+    # Check minimum project cost
+    if "min_project_cost" in scheme:
+        if cost <= scheme["min_project_cost"]:
+            return False
+
+    # Check maximum project cost
+    if "max_project_cost" in scheme:
+        if cost > scheme["max_project_cost"]:
+            return False
+
+    # Check education status
+    if "student" in scheme["education_status"]:
+        if education_status != "student":
+            return False
+
+    return True
+
+
+# ==================================================
+# FIND ELIGIBLE SCHEMES
+# ==================================================
+
+def recommend_schemes(project_type, cost, income, education_status):
+
+    eligible_schemes = []
+
+    for scheme in schemes:
+
+        if check_scheme(
+            scheme,
+            project_type,
+            cost,
+            income,
+            education_status
+        ):
+            eligible_schemes.append(scheme)
+
+    return eligible_schemes
+
+
+# ==================================================
+# FIND OVERALL REJECTION REASONS
+# ==================================================
+
+def get_overall_rejection_reason(
+    project_type,
+    cost,
+    income,
+    education_status
+):
+
+    reasons = []
+
+
+    # ------------------------------------------------
+    # 1. INCOME CHECK
+    # ------------------------------------------------
+
+    income_limits = [
+        scheme["income_limit"]
+        for scheme in schemes
+        if "income_limit" in scheme
+    ]
+
+    maximum_income = max(income_limits)
+
+    if income > maximum_income:
+
+        reasons.append(
+            f"Your annual income of ₹{income:,.0f} "
+            f"exceeds the maximum eligible limit of "
+            f"₹{maximum_income:,.0f}."
+        )
+
+
+    # ------------------------------------------------
+    # 2. PROJECT TYPE CHECK
+    # ------------------------------------------------
+
+    project_type_exists = False
+
+    for scheme in schemes:
+
+        if project_type in scheme["project_type"]:
+            project_type_exists = True
+            break
+
+    if not project_type_exists:
+
+        reasons.append(
+            f"Your selected project type "
+            f"'{project_type}' is not supported "
+            f"by the available schemes."
+        )
+
+
+    # ------------------------------------------------
+    # 3. PROJECT COST CHECK
+    # ------------------------------------------------
+
+    cost_matches = False
+
+    for scheme in schemes:
+
+        if project_type not in scheme["project_type"]:
+            continue
+
+        min_cost = scheme.get(
+            "min_project_cost",
+            0
+        )
+
+        max_cost = scheme.get(
+            "max_project_cost",
+            float("inf")
+        )
+
+        if min_cost < cost <= max_cost:
+
+            cost_matches = True
+            break
+
+    if not cost_matches:
+
+        reasons.append(
+            f"Your estimated project cost of "
+            f"₹{cost:,.0f} does not fall within "
+            f"the supported project-cost range."
+        )
+
+
+    # ------------------------------------------------
+    # 4. EDUCATION STATUS CHECK
+    # ------------------------------------------------
+
+    if project_type == "education":
+
+        if education_status != "student":
+
+            reasons.append(
+                "The education scheme requires "
+                "the applicant to have student status."
+            )
+
+
+    # ------------------------------------------------
+    # RETURN REASONS
+    # ------------------------------------------------
+
+    if not reasons:
+
+        reasons.append(
+            "No suitable scheme was found "
+            "based on the given eligibility criteria."
+        )
+
+    return reasons
+
+
+# ==================================================
+# USER INPUT
+# ==================================================
+
+print("\n===== Scheme Recommendation System =====")
+
+
+# --------------------------------------------------
+# PROJECT TYPE VALIDATION
+# --------------------------------------------------
+
+project_type = input(
+    "Enter project type (business/education): "
+).lower()
+
+while project_type not in ["business", "education"]:
+
+    print("Please enter either business or education.")
+
+    project_type = input(
+        "Enter project type (business/education): "
+    ).lower()
+
+
+# --------------------------------------------------
+# PROJECT COST
+# --------------------------------------------------
+
+cost = float(
+    input("Enter estimated project cost (₹): ")
+)
+
+
+# --------------------------------------------------
+# ANNUAL INCOME
+# --------------------------------------------------
+
+income = float(
+    input("Enter annual family income (₹): ")
+)
+
+
+# --------------------------------------------------
+# EDUCATION STATUS VALIDATION
+# --------------------------------------------------
+
+education_status = input(
+    "Enter education status (student/not_student): "
+).lower()
+
+while education_status not in ["student", "not_student"]:
+
+    print("Please enter either student or not_student.")
+
+    education_status = input(
+        "Enter education status (student/not_student): "
+    ).lower()
+
+
+# ==================================================
+# GET RECOMMENDATIONS
+# ==================================================
+
+eligible_schemes = recommend_schemes(
+    project_type,
+    cost,
+    income,
+    education_status
+)
+
+
+# ==================================================
+# DISPLAY RESULTS
+# ==================================================
+
+if eligible_schemes:
+
+    print("\n===== Recommended Schemes =====")
+
+    for scheme in eligible_schemes:
+
+        print(f"\n✓ {scheme['name']}")
+
+        print(
+            f"Maximum Loan: ₹{scheme['max_loan']:,.0f}"
+        )
+
+
+else:
+
+    print("\n===== Recommendation =====")
+
+    print("✗ No suitable scheme found.")
+
+    print("\nReasons:")
+
+    reasons = get_overall_rejection_reason(
+        project_type,
+        cost,
+        income,
+        education_status
+    )
+
+    for reason in reasons:
+
+        print("•", reason)
