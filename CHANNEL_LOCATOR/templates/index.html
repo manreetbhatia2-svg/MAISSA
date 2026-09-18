@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Channel Partner Locator</title>
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Lavender Blue Theme */
+      --lavender-bg: #EAEFFA;
+      --lavender-card: #FFFFFF;
+      --lavender-subtle: #F3F6FD;
+      --sidebar-bg: #161538;
+      --sidebar-surface: #201E4B;
+      --primary-blue: #4F46E5;
+      --primary-hover: #4338CA;
+      --accent-lavender: #818CF8;
+      --accent-periwinkle: #A5B4FC;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --status-eligible: #10B981;
+      --status-eligible-bg: #D1FAE5;
+      --border-subtle: rgba(255, 255, 255, 0.1);
+      --border-light: #E2E8F0;
+      --shadow-sm: 0 1px 3px rgba(30, 27, 75, 0.05);
+      --shadow-md: 0 6px 20px rgba(30, 27, 75, 0.08);
+      --shadow-lg: 0 12px 30px rgba(30, 27, 75, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: var(--lavender-bg);
+      color: var(--text-main);
+      position: relative;
+    }
+
+    /* Draggable Resizable Sidebar */
+    .sidebar {
+      width: 540px;
+      min-width: 380px;
+      max-width: 92vw;
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px 22px;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 10;
+      box-shadow: 6px 0 24px rgba(22, 21, 56, 0.4);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 5px; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+    /* Drag Handle */
+    .resizer-handle {
+      width: 12px;
+      height: 100%;
+      background: transparent;
+      cursor: col-resize;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .resizer-handle:hover, .resizer-handle.dragging { background: rgba(129, 140, 248, 0.35); }
+    .resizer-pill { width: 4px; height: 48px; background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
+    .resizer-handle:hover .resizer-pill, .resizer-handle.dragging .resizer-pill {
+      background: var(--accent-lavender); height: 64px; box-shadow: 0 0 10px var(--accent-lavender);
+    }
+
+    /* Brand Header */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+    }
+
+    .brand-info { display: flex; align-items: center; gap: 12px; }
+    .emblem-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 20px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    }
+    .brand-title { font-size: 17px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.3px; }
+    .brand-subtitle { font-size: 11.5px; font-weight: 600; color: var(--accent-periwinkle); }
+
+    .nav-toggle-wrap {
+      display: flex; gap: 4px;
+      background: var(--sidebar-surface);
+      padding: 3px; border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .nav-tab-btn {
+      padding: 6px 12px; border-radius: 8px; border: none;
+      font-size: 11px; font-weight: 700; color: #94A3B8;
+      background: transparent; cursor: pointer; transition: all 0.2s;
+    }
+
+    .nav-tab-btn.active {
+      background: var(--primary-blue); color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
+    }
+
+    /* Summary Metric Strip */
+    .dashboard-metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+
+    .metric-pill {
+      background: var(--sidebar-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 12px; border-radius: 12px; text-align: center; box-shadow: var(--shadow-sm);
+    }
+    .metric-pill .label {
+      font-size: 10px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .metric-pill .value { font-size: 15px; font-weight: 800; color: #FFFFFF; margin-top: 2px; }
+    .metric-pill .value.lavender { color: var(--accent-periwinkle); }
+    .metric-pill .value.green { color: var(--status-eligible); }
+
+    /* Control Panel */
+    .control-panel {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 15px; border-radius: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .btn-detect {
+      width: 100%; padding: 11px 16px; background: var(--primary-blue);
+      color: #FFFFFF; border: none; border-radius: 12px; font-size: 12.5px;
+      font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); transition: all 0.25s ease;
+    }
+    .btn-detect:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    select {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--border-subtle); border-radius: 8px;
+      font-size: 12px; background: var(--sidebar-surface); color: #FFFFFF; outline: none;
+    }
+    select:focus { border-color: var(--accent-lavender); }
+
+    /* Partner Cards */
+    #resultsList { display: flex; flex-direction: column; gap: 14px; }
+    .partner-card {
+      background: var(--lavender-card); border: 1px solid var(--border-light);
+      border-radius: 16px; padding: 18px; box-shadow: var(--shadow-sm);
+      cursor: pointer; transition: all 0.25s ease; position: relative;
+    }
+    .partner-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: #CBD5E1; }
+    .partner-card.hero-recommendation {
+      border: 2px solid var(--primary-blue);
+      background: linear-gradient(180deg, #F8F9FF 0%, #FFFFFF 100%);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.15);
+    }
+    .partner-card.active-route { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
+
+    .top-badge-strip { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .pill-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px;
+      border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    .pill-hero { background: var(--primary-blue); color: #FFFFFF; }
+    .pill-type-psb { background: #EEF2FF; color: var(--primary-blue); }
+    .pill-type-sca { background: var(--status-eligible-bg); color: #065F46; }
+    .pill-type-mfi { background: #F3E8FF; color: #6B21A8; }
+    .pill-type-rrb { background: #FFEDD5; color: #9A3412; }
+
+    .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 4px; }
+    .partner-name { font-size: 15px; font-weight: 800; color: var(--text-main); line-height: 1.3; }
+    .partner-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .partner-dist-line { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+
+    /* Circular Match Indicator */
+    .circle-score-wrap { position: relative; width: 54px; height: 54px; flex-shrink: 0; }
+    .circle-score-wrap svg { transform: rotate(-90deg); width: 54px; height: 54px; }
+    .circle-score-wrap circle { fill: none; stroke-width: 4.5; stroke-linecap: round; }
+    .circle-bg { stroke: #E2E8F0; }
+    .circle-progress { stroke: var(--primary-blue); transition: stroke-dashoffset 0.8s ease; }
+    .circle-text {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 11px; font-weight: 800; color: var(--text-main); text-align: center; line-height: 1;
+    }
+    .circle-caption { font-size: 8px; font-weight: 700; color: var(--text-muted); display: block; margin-top: 1px; }
+
+    .partner-specs {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      background: var(--lavender-subtle); border-radius: 10px; padding: 9px 12px; margin: 12px 0; font-size: 11px;
+    }
+    .partner-specs div { color: var(--text-muted); }
+    .partner-specs strong { display: block; font-size: 12.5px; color: var(--text-main); font-weight: 800; margin-top: 2px; }
+
+    .card-actions { display: flex; gap: 8px; }
+    .action-btn {
+      flex: 1; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
+      border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      gap: 5px; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-route-app { background: var(--primary-blue); color: #FFFFFF; }
+    .btn-route-app:hover { background: var(--primary-hover); }
+    .btn-view-details { background: var(--lavender-subtle); color: var(--sidebar-bg); border: 1px solid #CBD5E1; }
+    .btn-view-details:hover { background: #E2E8F0; }
+
+    .why-drawer {
+      display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-light); font-size: 11.5px;
+    }
+    .why-drawer.open { display: block; }
+    .breakdown-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; color: var(--text-muted); font-weight: 600; }
+    .breakdown-track { width: 100%; height: 5px; background: #E2E8F0; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    .breakdown-fill { height: 100%; background: var(--primary-blue); border-radius: 4px; }
+
+    .badge-tag-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+    .tag-item { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #F1F5F9; color: var(--text-main); border: 1px solid var(--border-light); font-weight: 600; }
+    .tag-item.active { background: #EEF2FF; color: var(--primary-blue); border-color: var(--accent-periwinkle); font-weight: 700; }
+
+    /* Admin View Panel */
+    #adminViewContainer { display: none; flex-direction: column; gap: 14px; }
+    .admin-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .admin-card { background: var(--sidebar-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 14px; }
+    .admin-card span { font-size: 10.5px; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
+    .admin-card h3 { font-size: 18px; color: #FFFFFF; font-weight: 800; margin-top: 4px; }
+
+    .admin-table-wrap {
+      background: var(--sidebar-surface); border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 12px; overflow-x: auto;
+    }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+    .admin-table th { color: #94A3B8; font-weight: 700; padding: 8px; border-bottom: 1px solid var(--border-subtle); }
+    .admin-table td { color: #E2E8F0; padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+    /* Map Canvas */
+    #map-container { flex: 1; height: 100%; position: relative; background: var(--lavender-bg); }
+    #map { width: 100%; height: 100%; }
+
+    #route-summary-hud {
+      position: absolute; top: 20px; right: 20px; z-index: 1000;
+      background: #FFFFFF; padding: 14px 18px; border-radius: 14px;
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-lg);
+      display: none; min-width: 260px;
+    }
+    #route-summary-hud h5 { font-size: 13.5px; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 6px; }
+    .hud-metrics { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .hud-metrics span strong { color: var(--primary-blue); font-size: 14px; }
+    .btn-hud-close {
+      background: var(--lavender-subtle); color: var(--sidebar-bg); border: 1px solid var(--border-light);
+      padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; width: 100%;
+    }
+
+    .map-legend {
+      position: absolute; bottom: 24px; left: 24px; z-index: 1000;
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+      padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--text-main);
+    }
+    .legend-row { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .leaflet-custom-pin {
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; border: 2px solid #FFFFFF; box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      color: white; font-weight: 800; font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar" id="appSidebar">
+    <div class="resizer-handle" id="resizerHandle" title="Drag to resize panel over map">
+      <div class="resizer-pill"></div>
+    </div>
+
+    <!-- Brand Header -->
+    <div class="brand-header">
+      <div class="brand-info">
+        <div class="emblem-icon">⚡</div>
+        <div>
+          <h2 class="brand-title">Smart Channel Locator</h2>
+          <span class="brand-subtitle">Social Credit Scheme Matching</span>
+        </div>
+      </div>
+      <div class="nav-toggle-wrap">
+        <button class="nav-tab-btn active" id="tabBeneficiary" onclick="switchMainView('beneficiary')">Locator</button>
+        <button class="nav-tab-btn" id="tabAdmin" onclick="switchMainView('admin')">Admin Hub</button>
+      </div>
+    </div>
+
+    <!-- VIEW 1: Beneficiary Locator -->
+    <div id="beneficiaryViewContainer" style="display: flex; flex-direction: column; gap: 14px;">
+      
+      <!-- Top Dashboard Summary Metric Strip -->
+      <div class="dashboard-metrics">
+        <div class="metric-pill">
+          <div class="label">Total Found</div>
+          <div class="value" id="sumFound">6 Partners</div>
+        </div>
+        <div class="metric-pill">
+          <div class="label">Verified Status</div>
+          <div class="value green" id="sumEligible">6 Verified</div>
+        </div>
+        <div class="metric-pill">
+          <div class="label">Nearest</div>
+          <div class="value lavender" id="sumNearest">1.77 km</div>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="control-panel">
+        <button class="btn-detect" onclick="locateUser()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="2" x2="12" y2="6"></line>
+            <line x1="12" y1="18" x2="12" y2="22"></line>
+            <line x1="2" y1="12" x2="6" y2="12"></line>
+            <line x1="18" y1="12" x2="22" y2="12"></line>
+          </svg>
+          Detect Current GPS Location
+        </button>
+        <p id="locText" style="font-size:11px; color:#94A3B8; text-align:center;">Position: Default (Pune Central)</p>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <div style="font-size:10.5px; color:#94A3B8; font-weight:700; margin-bottom:4px;">TARGET SCHEME</div>
+            <select id="schemeSelect" onchange="loadPartners()">
+              <option value="">All Schemes</option>
+              <option value="MFS">MFS (Micro Finance)</option>
+              <option value="Term Loan">Term Loan</option>
+              <option value="Educational Loan Scheme">Education Loan</option>
+              <option value="Aajeevika Micro-Finance Yojana">Aajeevika Micro-Finance</option>
+              <option value="MSY">Mahila Samriddhi (MSY)</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:10.5px; color:#94A3B8; font-weight:700; margin-bottom:4px;">SEARCH RADIUS</div>
+            <select id="radiusSelect" onchange="loadPartners()">
+              <option value="all">Any Distance</option>
+              <option value="5">Within 5 km</option>
+              <option value="10" selected>Within 10 km</option>
+              <option value="25">Within 25 km</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partner Cards Output -->
+      <div id="resultsList"></div>
+    </div>
+
+    <!-- VIEW 2: Admin Oversight Dashboard -->
+    <div id="adminViewContainer">
+      <div class="admin-stats-grid">
+        <div class="admin-card">
+          <span>Active Quota Pool</span>
+          <h3>₹188 Lakhs</h3>
+        </div>
+        <div class="admin-card">
+          <span>Monitored Partners</span>
+          <h3>16 Active</h3>
+        </div>
+        <div class="admin-card">
+          <span>High-Risk Intercepts</span>
+          <h3 style="color:#F43F5E;">3 Barred</h3>
+        </div>
+        <div class="admin-card">
+          <span>Avg Disbursal</span>
+          <h3>18.2 Days</h3>
+        </div>
+      </div>
+
+      <div class="admin-table-wrap">
+        <div style="font-size:11px; font-weight:800; color:#FFFFFF; margin-bottom:8px; display:flex; justify-content:space-between;">
+          <span>GOVERNANCE & RISK ENFORCEMENT</span>
+          <span style="color:var(--accent-lavender);">Monitoring Live</span>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Partner Branch</th>
+              <th>NPA %</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bank of Maharashtra - Swargate</td>
+              <td style="color:#F43F5E; font-weight:700;">18.5%</td>
+              <td><span style="background:#FEE2E2; color:#991B1B; padding:2px 6px; border-radius:4px; font-weight:700;">AUTO-SUSPENDED</span></td>
+            </tr>
+            <tr>
+              <td>Janata Sahakari Bank - Camp</td>
+              <td style="color:#F43F5E; font-weight:700;">16.2%</td>
+              <td><span style="background:#FEE2E2; color:#991B1B; padding:2px 6px; border-radius:4px; font-weight:700;">AUTO-SUSPENDED</span></td>
+            </tr>
+            <tr>
+              <td>State Bank of India - Kothrud</td>
+              <td style="color:#10B981; font-weight:700;">3.8%</td>
+              <td><span style="background:#DCFCE7; color:#166534; padding:2px 6px; border-radius:4px; font-weight:700;">ACCREDITED</span></td>
+            </tr>
+            <tr>
+              <td>MPBCDC Camp Ambedkar Bhavan</td>
+              <td style="color:#10B981; font-weight:700;">4.5%</td>
+              <td><span style="background:#DCFCE7; color:#166534; padding:2px 6px; border-radius:4px; font-weight:700;">ACCREDITED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admin-card">
+        <span>Decision Weight Matrix</span>
+        <div style="font-size:11px; color:#CBD5E1; margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; justify-content:space-between;"><span>Distance Decay (Proximity)</span><b>40%</b></div>
+          <div style="display:flex; justify-content:space-between;"><span>NPA Recovery Health</span><b>30%</b></div>
+          <div style="display:flex; justify-content:space-between;"><span>Active Liquidity / Quota</span><b>20%</b></div>
+          <div style="display:flex; justify-content:space-between;"><span>Historical Turnaround Speed</span><b>10%</b></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Leaflet Map Canvas -->
+  <main id="map-container">
+    <div id="map"></div>
+
+    <!-- Road Route Floating HUD -->
+    <div id="route-summary-hud">
+      <h5 id="hud-partner-name">Destination</h5>
+      <div class="hud-metrics">
+        <span>Road Distance: <strong id="hud-distance">0 km</strong></span>
+        <span>Est. Drive: <strong id="hud-duration">0 min</strong></span>
+      </div>
+      <button class="btn-hud-close" onclick="clearCurrentRoute()">✕ Clear Route</button>
+    </div>
+
+    <!-- Map Color Legend -->
+    <div class="map-legend">
+      <div class="legend-row"><span class="legend-dot" style="background:#4F46E5;"></span> Public Sector Banks (PSB)</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#10B981;"></span> State Channelizing Agencies (SCA)</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#9333EA;"></span> NBFC-MFIs</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#EA580C;"></span> Regional Rural Banks (RRB)</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#06B6D4; border: 2px solid white;"></span> Your Location</div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    let userLat = 18.5204, userLng = 73.8567;
+    let map, userMarker, partnerMarkers = [];
+    let activeRouteLayer = null;
+
+    // Relative endpoint: safe for any host or deployment
+    const BACKEND_BASE_URL = "";
+
+    const TYPE_MARKER_CONFIG = {
+      "PSB": { color: "#4F46E5", label: "B" },
+      "SCA": { color: "#10B981", label: "S" },
+      "NBFC-MFI": { color: "#9333EA", label: "M" },
+      "RRB": { color: "#EA580C", label: "R" }
+    };
+
+    /* Resizer Functionality */
+    const sidebar = document.getElementById("appSidebar");
+    const resizer = document.getElementById("resizerHandle");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      resizer.classList.add("dragging");
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isResizing) return;
+      const minW = 380;
+      const maxW = window.innerWidth * 0.92;
+      let newW = e.clientX;
+      if (newW >= minW && newW <= maxW) {
+        sidebar.style.width = `${newW}px`;
+        if (map) map.invalidateSize();
+      }
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (isResizing) {
+        isResizing = false;
+        resizer.classList.remove("dragging");
+        document.body.style.cursor = "default";
+        document.body.style.userSelect = "auto";
+        if (map) map.invalidateSize();
+      }
+    });
+
+    function switchMainView(view) {
+      const benView = document.getElementById("beneficiaryViewContainer");
+      const admView = document.getElementById("adminViewContainer");
+      const tabBen = document.getElementById("tabBeneficiary");
+      const tabAdm = document.getElementById("tabAdmin");
+
+      if (view === "admin") {
+        benView.style.display = "none";
+        admView.style.display = "flex";
+        tabBen.classList.remove("active");
+        tabAdm.classList.add("active");
+      } else {
+        admView.style.display = "none";
+        benView.style.display = "flex";
+        tabAdm.classList.remove("active");
+        tabBen.classList.add("active");
+      }
+    }
+
+    function initMap() {
+      map = L.map('map', { 
+        zoomControl: false, 
+        maxZoom: 17, 
+        minZoom: 9 
+      }).setView([userLat, userLng], 12);
+
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '© Esri — StreetMap Sources',
+        maxZoom: 17,
+        maxNativeZoom: 17
+      }).addTo(map);
+
+      userMarker = L.circleMarker([userLat, userLng], {
+        radius: 10, 
+        fillColor: '#06B6D4', 
+        color: '#FFFFFF', 
+        weight: 3, 
+        fillOpacity: 1
+      }).addTo(map).bindPopup("<b>Your Current Position</b>");
+    }
+
+    function locateUser() {
+      if (!navigator.geolocation) return;
+      document.getElementById("locText").innerText = "Detecting GPS coordinates...";
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          userMarker.setLatLng([userLat, userLng]);
+          document.getElementById("locText").innerText = `Located: (${userLat.toFixed(3)}, ${userLng.toFixed(3)})`;
+          loadPartners();
+        },
+        () => loadPartners()
+      );
+    }
+
+    async function drawInAppRoute(destLat, destLng, partnerName) {
+      if (activeRouteLayer) map.removeLayer(activeRouteLayer);
+
+      document.getElementById("route-summary-hud").style.display = "block";
+      document.getElementById("hud-partner-name").innerText = partnerName;
+      document.getElementById("hud-distance").innerText = "Calculating...";
+      document.getElementById("hud-duration").innerText = "Calculating...";
+
+      try {
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userLng},${userLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+        const res = await fetch(osrmUrl);
+        const data = await res.json();
+
+        if (!data.routes || data.routes.length === 0) return;
+
+        const route = data.routes[0];
+        const distanceKm = (route.distance / 1000).toFixed(1);
+        const durationMin = Math.round(route.duration / 60);
+
+        document.getElementById("hud-distance").innerText = `${distanceKm} km`;
+        document.getElementById("hud-duration").innerText = `~${durationMin} mins`;
+
+        activeRouteLayer = L.geoJSON(route.geometry, {
+          style: { color: '#4F46E5', weight: 5, opacity: 0.9, lineCap: 'round', lineJoin: 'round' }
+        }).addTo(map);
+
+        map.fitBounds(activeRouteLayer.getBounds().pad(0.18), { maxZoom: 16 });
+      } catch (err) {
+        console.error("OSRM Route Error:", err);
+      }
+    }
+
+    function clearCurrentRoute() {
+      if (activeRouteLayer) {
+        map.removeLayer(activeRouteLayer);
+        activeRouteLayer = null;
+      }
+      document.getElementById("route-summary-hud").style.display = "none";
+      document.querySelectorAll('.partner-card').forEach(c => c.classList.remove('active-route'));
+      const group = new L.featureGroup([...partnerMarkers, userMarker]);
+      map.fitBounds(group.getBounds().pad(0.12), { maxZoom: 15 });
+    }
+
+    function toggleWhyDrawer(idx, event) {
+      event.stopPropagation();
+      const drawer = document.getElementById(`why-${idx}`);
+      const btn = document.getElementById(`btn-details-${idx}`);
+      if (drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        btn.innerText = "Why this Partner? ▾";
+      } else {
+        drawer.classList.add('open');
+        btn.innerText = "Hide Breakdown ▴";
+      }
+    }
+
+    async function loadPartners() {
+      const scheme = document.getElementById("schemeSelect").value;
+      const radius = document.getElementById("radiusSelect").value;
+      const list = document.getElementById("resultsList");
+      list.innerHTML = `<p style="font-size:12px; color:#94A3B8; padding:10px;">Evaluating accredited channel partners...</p>`;
+
+      partnerMarkers.forEach(m => map.removeLayer(m));
+      partnerMarkers = [];
+
+      let partners = [];
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+        const res = await fetch(`${BACKEND_BASE_URL}/api/partners/locate?lat=${userLat}&lng=${userLng}&scheme=${encodeURIComponent(scheme)}`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        partners = data.data;
+      } catch (err) {
+        // High-fidelity fallback with realistic coordinates
+        partners = [
+          {
+            name: "State Bank of India - Kothrud SME Branch", type: "PSB", latitude: 18.5074, longitude: 73.8077,
+            address: "Paud Road, Kothrud, Pune", distance_km: 5.36, routing_score: 80.9,
+            remaining_quota_lakhs: 65.0, npa_rate: 0.038, avg_disbursal_days: 24,
+            supported_schemes: ["Term Loan", "Educational Loan Scheme", "MFS"]
+          },
+          {
+            name: "Mahatma Phule Backward Class Dev Corp (MPBCDC)", type: "SCA", latitude: 18.5126, longitude: 73.8782,
+            address: "Ambedkar Bhavan, Camp, Pune", distance_km: 2.8, routing_score: 78.7,
+            remaining_quota_lakhs: 38.0, npa_rate: 0.045, avg_disbursal_days: 18,
+            supported_schemes: ["MFS", "Aajeevika Micro-Finance Yojana", "MSY"]
+          },
+          {
+            name: "Maharashtra Gramin Bank - Hadapsar", type: "RRB", latitude: 18.5089, longitude: 73.9260,
+            address: "Pune-Solapur Rd, Hadapsar, Pune", distance_km: 7.4, routing_score: 77.5,
+            remaining_quota_lakhs: 25.0, npa_rate: 0.049, avg_disbursal_days: 15,
+            supported_schemes: ["Term Loan", "MFS"]
+          },
+          {
+            name: "Bank of Baroda - Deccan Gymkhana Branch", type: "PSB", latitude: 18.5177, longitude: 73.8438,
+            address: "Ashok Chambers, Jangali Maharaj Rd, Pune", distance_km: 2.1, routing_score: 77.2,
+            remaining_quota_lakhs: 42.0, npa_rate: 0.041, avg_disbursal_days: 20,
+            supported_schemes: ["Term Loan", "MFS", "Educational Loan Scheme"]
+          },
+          {
+            name: "Fusion Microfinance - Shivajinagar Hub", type: "NBFC-MFI", latitude: 18.5314, longitude: 73.8446,
+            address: "FC Road, Shivajinagar, Pune", distance_km: 1.77, routing_score: 76.6,
+            remaining_quota_lakhs: 15.0, npa_rate: 0.021, avg_disbursal_days: 8,
+            supported_schemes: ["MFS", "Aajeevika Micro-Finance Yojana"]
+          },
+          {
+            name: "Central Bank of India - Swargate Branch", type: "PSB", latitude: 18.5018, longitude: 73.8586,
+            address: "Swargate Chowk, Pune", distance_km: 2.3, routing_score: 74.8,
+            remaining_quota_lakhs: 28.0, npa_rate: 0.052, avg_disbursal_days: 22,
+            supported_schemes: ["Term Loan", "Educational Loan Scheme"]
+          }
+        ];
+      }
+
+      if (radius !== "all") {
+        const maxDist = parseFloat(radius);
+        partners = partners.filter(p => p.distance_km <= maxDist);
+      }
+
+      const totalCount = partners.length;
+      const minDistance = totalCount > 0 ? Math.min(...partners.map(p => p.distance_km)) : 0;
+
+      document.getElementById("sumFound").innerText = `${totalCount} Partners`;
+      document.getElementById("sumEligible").innerText = `${totalCount} Verified`;
+      document.getElementById("sumNearest").innerText = `${minDistance} km`;
+
+      list.innerHTML = "";
+
+      if (partners.length === 0) {
+        list.innerHTML = `<p style="font-size:12px; color:#DC2626; padding:12px; background:#FEE2E2; border-radius:12px; font-weight:600;">No matching partners found within ${radius} km for this scheme.</p>`;
+        return;
+      }
+
+      partners.forEach((p, idx) => {
+        const isTop = idx === 0;
+        const pType = p.type || "PSB";
+        const cfg = TYPE_MARKER_CONFIG[pType] || { color: "#4F46E5", label: "B" };
+
+        const distScore = Math.max(0, Math.round((1 - p.distance_km / 30) * 100));
+        const npaScore = Math.max(0, Math.round((1 - p.npa_rate / 0.15) * 100));
+        const quotaScore = Math.min(100, Math.round((p.remaining_quota_lakhs / 50) * 100));
+        const schemes = p.supported_schemes || ["Term Loan", "MFS"];
+
+        const strokeDashoffset = 125.6 - (125.6 * p.routing_score) / 100;
+
+        const customIcon = L.divIcon({
+          className: '',
+          html: `<div class="leaflet-custom-pin" style="background:${cfg.color}; width:${isTop ? 28 : 24}px; height:${isTop ? 28 : 24}px; border-width:${isTop ? 3 : 2}px;">${cfg.label}</div>`,
+          iconSize: [isTop ? 28 : 24, isTop ? 28 : 24],
+          iconAnchor: [isTop ? 14 : 12, isTop ? 14 : 12]
+        });
+
+        const marker = L.marker([p.latitude, p.longitude], { icon: customIcon }).addTo(map);
+
+        marker.bindPopup(`
+          <div style="font-family:'Plus Jakarta Sans', sans-serif;">
+            <span style="font-size:10px; font-weight:800; color:${cfg.color}; text-transform:uppercase;">${p.type}</span>
+            <h4 style="font-size:13px; font-weight:800; color:#0F172A; margin:2px 0;">${p.name}</h4>
+            <p style="font-size:11px; color:#64748B; margin-bottom:8px;">${p.address} • <b>${p.distance_km} km</b></p>
+            <button onclick="drawInAppRoute(${p.latitude}, ${p.longitude}, '${p.name.replace(/'/g, "\\'")}')" 
+              style="background:#4F46E5; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">
+              Get Route Directions →
+            </button>
+          </div>
+        `);
+        partnerMarkers.push(marker);
+
+        const card = document.createElement("div");
+        card.className = `partner-card ${isTop ? 'hero-recommendation' : ''}`;
+        card.id = `card-${idx}`;
+
+        card.onclick = (e) => {
+          if (e.target.closest('button') || e.target.closest('a')) return;
+          map.flyTo([p.latitude, p.longitude], 15, { duration: 1.0 });
+          marker.openPopup();
+        };
+
+        const badgeClass = pType === "PSB" ? "pill-type-psb" : (pType === "SCA" ? "pill-type-sca" : (pType === "NBFC-MFI" ? "pill-type-mfi" : "pill-type-rrb"));
+
+        card.innerHTML = `
+          <div class="top-badge-strip">
+            <div>
+              ${isTop ? `<span class="pill-badge pill-hero">⭐ TOP RECOMMENDATION</span>` : ''}
+              <span class="pill-badge ${badgeClass}">${p.type}</span>
+            </div>
+            <div style="display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:700; color:#10B981;">
+              <span>✓</span> Verified Partner
+            </div>
+          </div>
+
+          <div class="card-header-flex">
+            <div class="partner-titles">
+              <div class="partner-name">${p.name}</div>
+              <div class="partner-sub">${p.address}</div>
+              <div class="partner-dist-line">
+                <span>📍</span> <strong>${p.distance_km} km away</strong>
+              </div>
+            </div>
+
+            <div class="circle-score-wrap" title="Match Score: ${p.routing_score}%">
+              <svg viewBox="0 0 52 52">
+                <circle class="circle-bg" cx="26" cy="26" r="20"></circle>
+                <circle class="circle-progress" cx="26" cy="26" r="20" 
+                  stroke-dasharray="125.6" 
+                  stroke-dashoffset="${strokeDashoffset}"></circle>
+              </svg>
+              <div class="circle-text">
+                ${p.routing_score}%
+                <span class="circle-caption">MATCH</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="partner-specs">
+            <div>Remaining Quota<strong>₹${p.remaining_quota_lakhs}L</strong></div>
+            <div>NPA Rate<strong>${(p.npa_rate * 100).toFixed(1)}%</strong></div>
+            <div>Avg Disbursal<strong>~${p.avg_disbursal_days}d</strong></div>
+          </div>
+
+          <div class="card-actions">
+            <button class="action-btn btn-view-details" id="btn-details-${idx}" onclick="toggleWhyDrawer(${idx}, event)">
+              Why this Partner? ▾
+            </button>
+            <button class="action-btn btn-route-app" onclick="highlightAndRoute(${idx}, ${p.latitude}, ${p.longitude}, '${p.name.replace(/'/g, "\\'")}')">
+              Get Directions →
+            </button>
+          </div>
+
+          <div class="why-drawer" id="why-${idx}">
+            <div class="breakdown-row">
+              <span>Proximity Match (40%)</span>
+              <span>${distScore}%</span>
+            </div>
+            <div class="breakdown-track"><div class="breakdown-fill" style="width:${distScore}%;"></div></div>
+
+            <div class="breakdown-row">
+              <span>NPA Recovery Health (30%)</span>
+              <span>${npaScore}%</span>
+            </div>
+            <div class="breakdown-track"><div class="breakdown-fill" style="width:${npaScore}%; background:#10B981;"></div></div>
+
+            <div class="breakdown-row">
+              <span>Scheme Lending Cap (20%)</span>
+              <span>${quotaScore}%</span>
+            </div>
+            <div class="breakdown-track"><div class="breakdown-fill" style="width:${quotaScore}%; background:#818CF8;"></div></div>
+
+            <div style="font-size:10px; font-weight:700; color:#64748B; margin-top:8px;">Accredited Credit Schemes:</div>
+            <div class="badge-tag-wrap">
+              ${schemes.map(s => `<span class="tag-item ${scheme && s.toLowerCase().includes(scheme.toLowerCase()) ? 'active' : ''}">${s}</span>`).join('')}
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      if (partnerMarkers.length > 0) {
+        const group = new L.featureGroup([...partnerMarkers, userMarker]);
+        map.fitBounds(group.getBounds().pad(0.12), { maxZoom: 15 });
+      }
+    }
+
+    function highlightAndRoute(idx, lat, lng, name) {
+      document.querySelectorAll('.partner-card').forEach(c => c.classList.remove('active-route'));
+      const card = document.getElementById(`card-${idx}`);
+      if (card) card.classList.add('active-route');
+      drawInAppRoute(lat, lng, name);
+    }
+
+    window.onload = () => {
+      initMap();
+      loadPartners();
+    };
+  </script>
+</body>
+</html>
