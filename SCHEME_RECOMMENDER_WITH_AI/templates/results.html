@@ -1,89 +1,274 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matched Schemes | MAISSA</title>
 
-    <title>Recommendation Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    :root {
+      /* Dark Lavender Outer Canvas */
+      --bg-outer-dark: #161538;
+      --bg-gradient-top: #201E4B;
+      --bg-gradient-bottom: #0D0C22;
+
+      /* Inner White Card */
+      --card-white: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border-subtle: #E2E8F0;
+
+      /* Accents */
+      --primary-blue: #4F46E5;
+      --primary-hover: #4338CA;
+      --accent-lavender: #818CF8;
+      --accent-soft-blue: #EEF2FF;
+      --status-green: #10B981;
+      --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(1200px 800px at 50% -10%, var(--bg-gradient-top) 0%, var(--bg-outer-dark) 55%, var(--bg-gradient-bottom) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 860px;
+      background: var(--card-white);
+      border-radius: var(--radius);
+      padding: 42px 48px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .emblem-icon {
+      width: 46px;
+      height: 46px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 22px;
+      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+    }
+
+    .brand-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-blue);
+    }
+
+    .schemes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 20px 0 28px 0;
+    }
+
+    .scheme-card {
+      background: #F8FAFC;
+      border: 1.5px solid var(--border-subtle);
+      border-left: 5px solid var(--primary-blue);
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .scheme-card:hover {
+      background: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.08);
+      border-color: #CBD5E1;
+      border-left-color: var(--primary-blue);
+    }
+
+    .scheme-info h3 {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scheme-info h3 span {
+      color: var(--status-green);
+      font-size: 18px;
+    }
+
+    .quota-pill {
+      background: var(--accent-soft-blue);
+      border: 1px solid #C7D2FE;
+      color: var(--primary-blue);
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .no-match-box {
+      background: #FFF1F2;
+      border: 1.5px solid #FECDD3;
+      border-radius: 14px;
+      padding: 24px;
+      margin: 20px 0 28px 0;
+    }
+
+    .no-match-box h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #9F1239;
+      margin-bottom: 6px;
+    }
+
+    .no-match-box p {
+      font-size: 13px;
+      color: #881337;
+      margin-bottom: 12px;
+    }
+
+    .reasons-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reasons-list li {
+      font-size: 12.5px;
+      color: #9F1239;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reasons-list li::before {
+      content: "✕";
+      color: #E11D48;
+      font-weight: 800;
+    }
+
+    .btn-back {
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--primary-blue);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-back:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
-
 <body>
 
-    <div class="container">
+  <main class="main-container">
+   
+    <header class="brand-header">
+      <div class="brand-info">
+        <div class="emblem-icon">⚡</div>
+        <div>
+          <h1 class="brand-title">Scheme Recommendation</h1>
+          <span class="brand-subtitle">Evaluation & Eligibility Overview</span>
+        </div>
+      </div>
+    </header>
 
-        <h1>Scheme Recommendation</h1>
+    {% if eligible_schemes %}
+      <p style="font-size: 13.5px; color: var(--text-muted);">
+        Based on your venture parameters, the following social credit schemes qualify for application:
+      </p>
 
+      <div class="schemes-list">
+        {% for scheme in eligible_schemes %}
+          <div class="scheme-card">
+            <div class="scheme-info">
+              <h3><span>✓</span> {{ scheme.name }}</h3>
+            </div>
+            <div class="quota-pill">
+              {% if scheme.max_loan is not none %}
+                Max ₹{{ "{:,.0f}".format(scheme.max_loan) }}
+              {% else %}
+                Lending Cap Unspecified
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
 
-        {% if eligible_schemes %}
+    {% else %}
+      <div class="no-match-box">
+        <h2>No Eligible Schemes Identified</h2>
+        <p>Your inputs do not qualify under current DBT lending rules:</p>
+        <ul class="reasons-list">
+          {% for reason in reasons %}
+            <li>{{ reason }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
 
-            <h2>Recommended Schemes</h2>
+    <a href="/" style="text-decoration: none;">
+      <button type="button" class="btn-back">
+        ← Re-evaluate Other Parameters
+      </button>
+    </a>
 
-            <p>
-                Based on the information provided, these schemes
-                may be suitable for you:
-            </p>
-
-
-            {% for scheme in eligible_schemes %}
-
-                <div class="scheme-card">
-
-                    <h3>✓ {{ scheme.name }}</h3>
-
-                    <p>
-                        <strong>Maximum Loan:</strong>
-                        {% if scheme.max_loan is not none %}
-                        ₹{{ "{:,.0f}".format(scheme.max_loan) }}
-                        {% else %}
-                        Not specified
-                        {% endif %}
-                    </p>
-
-                </div>
-
-            {% endfor %}
-
-
-        {% else %}
-
-            <h2>No Suitable Scheme Found</h2>
-
-            <p>
-                Based on the information provided, no suitable
-                scheme was found.
-            </p>
-
-            <h3>Reasons:</h3>
-
-            <ul>
-
-                {% for reason in reasons %}
-
-                    <li>{{ reason }}</li>
-
-                {% endfor %}
-
-            </ul>
-
-        {% endif %}
-
-
-        <br>
-
-        <a href="/">
-            <button type="button">
-                Check Again
-            </button>
-        </a>
-
-    </div>
+  </main>
 
 </body>
-
 </html>
-```
