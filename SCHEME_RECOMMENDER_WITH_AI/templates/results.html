@@ -1,0 +1,89 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recommendation Results</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Scheme Recommendation</h1>
+
+
+        {% if eligible_schemes %}
+
+            <h2>Recommended Schemes</h2>
+
+            <p>
+                Based on the information provided, these schemes
+                may be suitable for you:
+            </p>
+
+
+            {% for scheme in eligible_schemes %}
+
+                <div class="scheme-card">
+
+                    <h3>✓ {{ scheme.name }}</h3>
+
+                    <p>
+                        <strong>Maximum Loan:</strong>
+                        {% if scheme.max_loan is not none %}
+                        ₹{{ "{:,.0f}".format(scheme.max_loan) }}
+                        {% else %}
+                        Not specified
+                        {% endif %}
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+            <h2>No Suitable Scheme Found</h2>
+
+            <p>
+                Based on the information provided, no suitable
+                scheme was found.
+            </p>
+
+            <h3>Reasons:</h3>
+
+            <ul>
+
+                {% for reason in reasons %}
+
+                    <li>{{ reason }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        {% endif %}
+
+
+        <br>
+
+        <a href="/">
+            <button type="button">
+                Check Again
+            </button>
+        </a>
+
+    </div>
+
+</body>
+
+</html>
+```

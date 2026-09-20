@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Pre-Matric Scholarship for Children of Parents Engaged in Unclean Occupations",
+        "project_type": [
+            "education"
+        ],
+        "max_project_cost": null,
+        "income_limit": null,
+        "education_status": "student",
+        "max_loan": null,
+        "target_groups": [
+            "Children of parents engaged in unclean occupations"
+        ],
+        "source_url": "https://socialwelfare.maharashtra.gov.in/en/scheme/pre-matric-scholarship-for-children-of-parents-engaged-in-unclean-occupations/"
+    }
+]

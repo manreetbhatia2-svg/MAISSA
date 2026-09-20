@@ -1,0 +1,101 @@
+{
+    "schemes": [
+        {
+            "name": "Micro Finance Scheme (MFS)",
+            "project_type": [
+                "business",
+                "income-generating"
+            ],
+            "max_project_cost": 140000,
+            "income_limit": 500000,
+            "education_status": [
+                "not_required"
+            ],
+            "max_loan": 125000
+        },
+        {
+            "name": "Aajeevika Micro-Finance Yojana (AMY)",
+            "project_type": [
+                "business",
+                "income-generating"
+            ],
+            "max_project_cost": 140000,
+            "income_limit": 500000,
+            "education_status": [
+                "not_required"
+            ],
+            "max_loan": 125000
+        },
+        {
+            "name": "Term Loan (TL)",
+            "project_type": [
+                "business",
+                "income-generating"
+            ],
+            "min_project_cost": 140000,
+            "max_project_cost": 5000000,
+            "income_limit": 500000,
+            "education_status": [
+                "not_required"
+            ],
+            "max_loan": 4500000
+        },
+        {
+            "name": "Udyam Nidhi Yojana (UNY)",
+            "project_type": [
+                "business",
+                "small/micro activity"
+            ],
+            "max_project_cost": 500000,
+            "income_limit": 500000,
+            "education_status": [
+                "not_required"
+            ],
+            "max_loan": 450000
+        },
+        {
+            "name": "Educational Loan Scheme (ELS)",
+            "project_type": [
+                "education"
+            ],
+            "income_limit": 500000,
+            "education_status": [
+                "student"
+            ],
+            "max_loan": 4000000
+        },
+        {
+            "name": "Pre-Matric Scholarship for Children of Parents Engaged in Unclean Occupations",
+            "project_type": [
+                "education"
+            ],
+            "max_project_cost": null,
+            "income_limit": null,
+            "education_status": [
+                "student"
+            ],
+            "max_loan": null,
+            "target_groups": [
+                "Children of parents engaged in unclean occupations"
+            ],
+            "source_url": "https://socialwelfare.maharashtra.gov.in/en/scheme/pre-matric-scholarship-for-children-of-parents-engaged-in-unclean-occupations/"
+        },
+        {
+            "name": "Government of India Post-Matric Scholarship",
+            "project_type": [
+                "education"
+            ],
+            "max_project_cost": null,
+            "income_limit": 250000,
+            "education_status": [
+                "student"
+            ],
+            "max_loan": null,
+            "target_groups": [
+                "Scheduled Castes",
+                "Neo-Buddhist"
+            ],
+            "source_url": "https://socialwelfare.maharashtra.gov.in/en/scheme/government-of-india-post-matric-scholarship/"
+        }
+    ]
+}

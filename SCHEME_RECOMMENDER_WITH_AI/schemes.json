@@ -1,0 +1,44 @@
+{
+  "schemes": [
+    {
+      "name": "Micro Finance Scheme (MFS)",
+      "project_type": ["business", "income-generating"],
+      "max_project_cost": 140000,
+      "income_limit": 500000,
+      "education_status": ["not_required"],
+      "max_loan": 125000
+    },
+    {
+      "name": "Aajeevika Micro-Finance Yojana (AMY)",
+      "project_type": ["business", "income-generating"],
+      "max_project_cost": 140000,
+      "income_limit": 500000,
+      "education_status": ["not_required"],
+      "max_loan": 125000
+    },
+    {
+      "name": "Term Loan (TL)",
+      "project_type": ["business", "income-generating"],
+      "min_project_cost": 140000,
+      "max_project_cost": 5000000,
+      "income_limit": 500000,
+      "education_status": ["not_required"],
+      "max_loan": 4500000
+    },
+    {
+      "name": "Udyam Nidhi Yojana (UNY)",
+      "project_type": ["business", "small/micro activity"],
+      "max_project_cost": 500000,
+      "income_limit": 500000,
+      "education_status": ["not_required"],
+      "max_loan": 450000
+    },
+    {
+      "name": "Educational Loan Scheme (ELS)",
+      "project_type": ["education"],
+      "income_limit": 500000,
+      "education_status": ["student"],
+      "max_loan": 4000000
+    }
+  ]
+}

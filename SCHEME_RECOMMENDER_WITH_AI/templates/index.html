@@ -1,0 +1,97 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Scheme Recommender</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Scheme Recommender</h1>
+
+        <p>
+            Enter your details to find suitable financial assistance schemes.
+        </p>
+
+        <form action="/recommend" method="POST">
+
+            <!-- Project Type -->
+            <label for="project_type">
+                Project Type
+            </label>
+
+            <select id="project_type"
+                    name="project_type"
+                    required>
+
+                <option value="">Select project type</option>
+                <option value="business">Business</option>
+                <option value="education">Education</option>
+
+            </select>
+
+
+            <!-- Project Cost -->
+            <label for="cost">
+                Estimated Project Cost (₹)
+            </label>
+
+            <input type="number"
+                   id="cost"
+                   name="cost"
+                   placeholder="Enter project cost"
+                   min="0"
+                   required>
+
+
+            <!-- Annual Income -->
+            <label for="income">
+                Annual Family Income (₹)
+            </label>
+
+            <input type="number"
+                   id="income"
+                   name="income"
+                   placeholder="Enter annual income"
+                   min="0"
+                   required>
+
+
+            <!-- Education Status -->
+            <label for="education_status">
+                Education Status
+            </label>
+
+            <select id="education_status"
+                    name="education_status"
+                    required>
+
+                <option value="">Select status</option>
+                <option value="student">Student</option>
+                <option value="not_student">Not a Student</option>
+
+            </select>
+
+
+            <!-- Submit -->
+            <button type="submit">
+                Find Suitable Schemes
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
+```
