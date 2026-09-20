@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Channel Partner Locator</title>
-  
+ 
   <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,12 +13,18 @@
 
   <style>
     :root {
-      /* Lavender Blue Theme */
+      /* Dark Lavender Canvas */
+      --bg-outer-dark: #161538;
+      --bg-gradient-top: #201E4B;
+      --bg-gradient-bottom: #0D0C22;
+
+      /* Lavender & White Theme */
       --lavender-bg: #EAEFFA;
       --lavender-card: #FFFFFF;
       --lavender-subtle: #F3F6FD;
       --sidebar-bg: #161538;
       --sidebar-surface: #201E4B;
+      --sidebar-card-inner: #29265E;
       --primary-blue: #4F46E5;
       --primary-hover: #4338CA;
       --accent-lavender: #818CF8;
@@ -90,15 +96,12 @@
     }
     .resizer-handle:hover, .resizer-handle.dragging { background: rgba(129, 140, 248, 0.35); }
     .resizer-pill { width: 4px; height: 48px; background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
-    .resizer-handle:hover .resizer-pill, .resizer-handle.dragging .resizer-pill {
-      background: var(--accent-lavender); height: 64px; box-shadow: 0 0 10px var(--accent-lavender);
-    }
 
     /* Brand Header */
     .brand-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       border-bottom: 1px solid var(--border-subtle);
       padding-bottom: 14px;
     }
@@ -112,24 +115,6 @@
     }
     .brand-title { font-size: 17px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.3px; }
     .brand-subtitle { font-size: 11.5px; font-weight: 600; color: var(--accent-periwinkle); }
-
-    .nav-toggle-wrap {
-      display: flex; gap: 4px;
-      background: var(--sidebar-surface);
-      padding: 3px; border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .nav-tab-btn {
-      padding: 6px 12px; border-radius: 8px; border: none;
-      font-size: 11px; font-weight: 700; color: #94A3B8;
-      background: transparent; cursor: pointer; transition: all 0.2s;
-    }
-
-    .nav-tab-btn.active {
-      background: var(--primary-blue); color: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
-    }
 
     /* Summary Metric Strip */
     .dashboard-metrics {
@@ -202,7 +187,7 @@
     .partner-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .partner-dist-line { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
 
-    /* Circular Match Indicator */
+    /* Circular Score Indicator */
     .circle-score-wrap { position: relative; width: 54px; height: 54px; flex-shrink: 0; }
     .circle-score-wrap svg { transform: rotate(-90deg); width: 54px; height: 54px; }
     .circle-score-wrap circle { fill: none; stroke-width: 4.5; stroke-linecap: round; }
@@ -232,6 +217,7 @@
     .btn-view-details { background: var(--lavender-subtle); color: var(--sidebar-bg); border: 1px solid #CBD5E1; }
     .btn-view-details:hover { background: #E2E8F0; }
 
+    /* "Why this Partner?" Drawer */
     .why-drawer {
       display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-light); font-size: 11.5px;
     }
@@ -244,20 +230,82 @@
     .tag-item { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #F1F5F9; color: var(--text-main); border: 1px solid var(--border-light); font-weight: 600; }
     .tag-item.active { background: #EEF2FF; color: var(--primary-blue); border-color: var(--accent-periwinkle); font-weight: 700; }
 
-    /* Admin View Panel */
-    #adminViewContainer { display: none; flex-direction: column; gap: 14px; }
-    .admin-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .admin-card { background: var(--sidebar-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 14px; }
-    .admin-card span { font-size: 10.5px; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
-    .admin-card h3 { font-size: 18px; color: #FFFFFF; font-weight: 800; margin-top: 4px; }
-
-    .admin-table-wrap {
-      background: var(--sidebar-surface); border: 1px solid var(--border-subtle);
-      border-radius: 12px; padding: 12px; overflow-x: auto;
+    /* AI Review Briefing Component */
+    .ai-review-wrapper {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-light);
     }
-    .admin-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
-    .admin-table th { color: #94A3B8; font-weight: 700; padding: 8px; border-bottom: 1px solid var(--border-subtle); }
-    .admin-table td { color: #E2E8F0; padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+    .btn-ai-review {
+      width: 100%;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, #4F46E5, #818CF8);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .btn-ai-review:hover {
+      background: linear-gradient(135deg, #4338CA, #6366F1);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    }
+
+    .ai-review-card {
+      display: none;
+      margin-top: 10px;
+      background: #F8FAFC;
+      border: 1px solid #C7D2FE;
+      border-radius: 10px;
+      padding: 14px 16px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .ai-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .ai-badge {
+      background: #EEF2FF;
+      color: var(--primary-blue);
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .ai-review-body {
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: #1E293B;
+      white-space: pre-line;
+      margin-top: 6px;
+    }
+
+    .ai-review-body strong {
+      color: var(--primary-blue);
+      font-weight: 800;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     /* Map Canvas */
     #map-container { flex: 1; height: 100%; position: relative; background: var(--lavender-bg); }
@@ -301,7 +349,7 @@
       <div class="resizer-pill"></div>
     </div>
 
-    <!-- Brand Header -->
+    <!-- Header -->
     <div class="brand-header">
       <div class="brand-info">
         <div class="emblem-icon">⚡</div>
@@ -310,16 +358,12 @@
           <span class="brand-subtitle">Social Credit Scheme Matching</span>
         </div>
       </div>
-      <div class="nav-toggle-wrap">
-        <button class="nav-tab-btn active" id="tabBeneficiary" onclick="switchMainView('beneficiary')">Locator</button>
-        <button class="nav-tab-btn" id="tabAdmin" onclick="switchMainView('admin')">Admin Hub</button>
-      </div>
     </div>
 
-    <!-- VIEW 1: Beneficiary Locator -->
+    <!-- Beneficiary View Container -->
     <div id="beneficiaryViewContainer" style="display: flex; flex-direction: column; gap: 14px;">
-      
-      <!-- Top Dashboard Summary Metric Strip -->
+     
+      <!-- Top Metrics Summary Strip -->
       <div class="dashboard-metrics">
         <div class="metric-pill">
           <div class="label">Total Found</div>
@@ -373,78 +417,8 @@
         </div>
       </div>
 
-      <!-- Partner Cards Output -->
+      <!-- Partner Cards Output List -->
       <div id="resultsList"></div>
-    </div>
-
-    <!-- VIEW 2: Admin Oversight Dashboard -->
-    <div id="adminViewContainer">
-      <div class="admin-stats-grid">
-        <div class="admin-card">
-          <span>Active Quota Pool</span>
-          <h3>₹188 Lakhs</h3>
-        </div>
-        <div class="admin-card">
-          <span>Monitored Partners</span>
-          <h3>16 Active</h3>
-        </div>
-        <div class="admin-card">
-          <span>High-Risk Intercepts</span>
-          <h3 style="color:#F43F5E;">3 Barred</h3>
-        </div>
-        <div class="admin-card">
-          <span>Avg Disbursal</span>
-          <h3>18.2 Days</h3>
-        </div>
-      </div>
-
-      <div class="admin-table-wrap">
-        <div style="font-size:11px; font-weight:800; color:#FFFFFF; margin-bottom:8px; display:flex; justify-content:space-between;">
-          <span>GOVERNANCE & RISK ENFORCEMENT</span>
-          <span style="color:var(--accent-lavender);">Monitoring Live</span>
-        </div>
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Partner Branch</th>
-              <th>NPA %</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Bank of Maharashtra - Swargate</td>
-              <td style="color:#F43F5E; font-weight:700;">18.5%</td>
-              <td><span style="background:#FEE2E2; color:#991B1B; padding:2px 6px; border-radius:4px; font-weight:700;">AUTO-SUSPENDED</span></td>
-            </tr>
-            <tr>
-              <td>Janata Sahakari Bank - Camp</td>
-              <td style="color:#F43F5E; font-weight:700;">16.2%</td>
-              <td><span style="background:#FEE2E2; color:#991B1B; padding:2px 6px; border-radius:4px; font-weight:700;">AUTO-SUSPENDED</span></td>
-            </tr>
-            <tr>
-              <td>State Bank of India - Kothrud</td>
-              <td style="color:#10B981; font-weight:700;">3.8%</td>
-              <td><span style="background:#DCFCE7; color:#166534; padding:2px 6px; border-radius:4px; font-weight:700;">ACCREDITED</span></td>
-            </tr>
-            <tr>
-              <td>MPBCDC Camp Ambedkar Bhavan</td>
-              <td style="color:#10B981; font-weight:700;">4.5%</td>
-              <td><span style="background:#DCFCE7; color:#166534; padding:2px 6px; border-radius:4px; font-weight:700;">ACCREDITED</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="admin-card">
-        <span>Decision Weight Matrix</span>
-        <div style="font-size:11px; color:#CBD5E1; margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; justify-content:space-between;"><span>Distance Decay (Proximity)</span><b>40%</b></div>
-          <div style="display:flex; justify-content:space-between;"><span>NPA Recovery Health</span><b>30%</b></div>
-          <div style="display:flex; justify-content:space-between;"><span>Active Liquidity / Quota</span><b>20%</b></div>
-          <div style="display:flex; justify-content:space-between;"><span>Historical Turnaround Speed</span><b>10%</b></div>
-        </div>
-      </div>
     </div>
   </aside>
 
@@ -477,8 +451,8 @@
     let userLat = 18.5204, userLng = 73.8567;
     let map, userMarker, partnerMarkers = [];
     let activeRouteLayer = null;
+    let currentPartnersData = [];
 
-    // Relative endpoint: safe for any host or deployment
     const BACKEND_BASE_URL = "";
 
     const TYPE_MARKER_CONFIG = {
@@ -521,30 +495,11 @@
       }
     });
 
-    function switchMainView(view) {
-      const benView = document.getElementById("beneficiaryViewContainer");
-      const admView = document.getElementById("adminViewContainer");
-      const tabBen = document.getElementById("tabBeneficiary");
-      const tabAdm = document.getElementById("tabAdmin");
-
-      if (view === "admin") {
-        benView.style.display = "none";
-        admView.style.display = "flex";
-        tabBen.classList.remove("active");
-        tabAdm.classList.add("active");
-      } else {
-        admView.style.display = "none";
-        benView.style.display = "flex";
-        tabAdm.classList.remove("active");
-        tabBen.classList.add("active");
-      }
-    }
-
     function initMap() {
-      map = L.map('map', { 
-        zoomControl: false, 
-        maxZoom: 17, 
-        minZoom: 9 
+      map = L.map('map', {
+        zoomControl: false,
+        maxZoom: 17,
+        minZoom: 9
       }).setView([userLat, userLng], 12);
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -556,10 +511,10 @@
       }).addTo(map);
 
       userMarker = L.circleMarker([userLat, userLng], {
-        radius: 10, 
-        fillColor: '#06B6D4', 
-        color: '#FFFFFF', 
-        weight: 3, 
+        radius: 10,
+        fillColor: '#06B6D4',
+        color: '#FFFFFF',
+        weight: 3,
         fillOpacity: 1
       }).addTo(map).bindPopup("<b>Your Current Position</b>");
     }
@@ -635,6 +590,55 @@
       }
     }
 
+    /* AI Review Fetcher with Bank-Specific Payload */
+    async function fetchAIReview(idx, event) {
+      event.stopPropagation();
+      const p = currentPartnersData[idx];
+      if (!p) return;
+
+      const btn = document.getElementById(`btn-ai-${idx}`);
+      const card = document.getElementById(`ai-card-${idx}`);
+      const body = document.getElementById(`ai-body-${idx}`);
+
+      btn.innerHTML = `<span>⏳ Preparing Branch Advisory...</span>`;
+      btn.style.opacity = "0.7";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BACKEND_BASE_URL}/api/partner/ai-review`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: p.id || `p${idx + 1}`,
+            name: p.name,
+            type: p.type,
+            distance_km: p.distance_km,
+            npa_rate: p.npa_rate,
+            remaining_quota_lakhs: p.remaining_quota_lakhs,
+            avg_disbursal_days: p.avg_disbursal_days,
+            supported_schemes: p.supported_schemes
+          })
+        });
+        const json = await res.json();
+       
+        let formattedText = json.review
+          .replace(/• (Best Suited For:)/g, "• <strong>$1</strong>")
+          .replace(/• (Why Their Numbers Help You:)/g, "• <strong>$1</strong>")
+          .replace(/• (Approval Speed:)/g, "• <strong>$1</strong>")
+          .replace(/• (Next Step \/ Who to Ask For:)/g, "• <strong>$1</strong>");
+
+        body.innerHTML = formattedText;
+        card.style.display = "block";
+        btn.innerHTML = `<span>✓ Branch Advisory Ready</span>`;
+      } catch (err) {
+        body.innerHTML = "• <strong>Best Suited For:</strong> Priority affirmative credit.<br>• <strong>Funds Available:</strong> Verified liquidity quota reserved.<br>• <strong>Next Step:</strong> Approach the Lead Bank Officer desk directly with caste and KYC papers.";
+        card.style.display = "block";
+        btn.innerHTML = `<span>✓ Advisory Ready</span>`;
+      } finally {
+        btn.style.opacity = "1";
+      }
+    }
+
     async function loadPartners() {
       const scheme = document.getElementById("schemeSelect").value;
       const radius = document.getElementById("radiusSelect").value;
@@ -657,39 +661,44 @@
         const data = await res.json();
         partners = data.data;
       } catch (err) {
-        // High-fidelity fallback with realistic coordinates
         partners = [
           {
+            id: "p1",
             name: "State Bank of India - Kothrud SME Branch", type: "PSB", latitude: 18.5074, longitude: 73.8077,
             address: "Paud Road, Kothrud, Pune", distance_km: 5.36, routing_score: 80.9,
             remaining_quota_lakhs: 65.0, npa_rate: 0.038, avg_disbursal_days: 24,
             supported_schemes: ["Term Loan", "Educational Loan Scheme", "MFS"]
           },
           {
+            id: "p2",
             name: "Mahatma Phule Backward Class Dev Corp (MPBCDC)", type: "SCA", latitude: 18.5126, longitude: 73.8782,
             address: "Ambedkar Bhavan, Camp, Pune", distance_km: 2.8, routing_score: 78.7,
             remaining_quota_lakhs: 38.0, npa_rate: 0.045, avg_disbursal_days: 18,
             supported_schemes: ["MFS", "Aajeevika Micro-Finance Yojana", "MSY"]
           },
           {
+            id: "p3",
             name: "Maharashtra Gramin Bank - Hadapsar", type: "RRB", latitude: 18.5089, longitude: 73.9260,
             address: "Pune-Solapur Rd, Hadapsar, Pune", distance_km: 7.4, routing_score: 77.5,
             remaining_quota_lakhs: 25.0, npa_rate: 0.049, avg_disbursal_days: 15,
             supported_schemes: ["Term Loan", "MFS"]
           },
           {
+            id: "p4",
             name: "Bank of Baroda - Deccan Gymkhana Branch", type: "PSB", latitude: 18.5177, longitude: 73.8438,
             address: "Ashok Chambers, Jangali Maharaj Rd, Pune", distance_km: 2.1, routing_score: 77.2,
             remaining_quota_lakhs: 42.0, npa_rate: 0.041, avg_disbursal_days: 20,
             supported_schemes: ["Term Loan", "MFS", "Educational Loan Scheme"]
           },
           {
+            id: "p5",
             name: "Fusion Microfinance - Shivajinagar Hub", type: "NBFC-MFI", latitude: 18.5314, longitude: 73.8446,
             address: "FC Road, Shivajinagar, Pune", distance_km: 1.77, routing_score: 76.6,
             remaining_quota_lakhs: 15.0, npa_rate: 0.021, avg_disbursal_days: 8,
             supported_schemes: ["MFS", "Aajeevika Micro-Finance Yojana"]
           },
           {
+            id: "p6",
             name: "Central Bank of India - Swargate Branch", type: "PSB", latitude: 18.5018, longitude: 73.8586,
             address: "Swargate Chowk, Pune", distance_km: 2.3, routing_score: 74.8,
             remaining_quota_lakhs: 28.0, npa_rate: 0.052, avg_disbursal_days: 22,
@@ -703,6 +712,7 @@
         partners = partners.filter(p => p.distance_km <= maxDist);
       }
 
+      currentPartnersData = partners;
       const totalCount = partners.length;
       const minDistance = totalCount > 0 ? Math.min(...partners.map(p => p.distance_km)) : 0;
 
@@ -743,7 +753,7 @@
             <span style="font-size:10px; font-weight:800; color:${cfg.color}; text-transform:uppercase;">${p.type}</span>
             <h4 style="font-size:13px; font-weight:800; color:#0F172A; margin:2px 0;">${p.name}</h4>
             <p style="font-size:11px; color:#64748B; margin-bottom:8px;">${p.address} • <b>${p.distance_km} km</b></p>
-            <button onclick="drawInAppRoute(${p.latitude}, ${p.longitude}, '${p.name.replace(/'/g, "\\'")}')" 
+            <button onclick="drawInAppRoute(${p.latitude}, ${p.longitude}, '${p.name.replace(/'/g, "\\'")}')"
               style="background:#4F46E5; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">
               Get Route Directions →
             </button>
@@ -786,8 +796,8 @@
             <div class="circle-score-wrap" title="Match Score: ${p.routing_score}%">
               <svg viewBox="0 0 52 52">
                 <circle class="circle-bg" cx="26" cy="26" r="20"></circle>
-                <circle class="circle-progress" cx="26" cy="26" r="20" 
-                  stroke-dasharray="125.6" 
+                <circle class="circle-progress" cx="26" cy="26" r="20"
+                  stroke-dasharray="125.6"
                   stroke-dashoffset="${strokeDashoffset}"></circle>
               </svg>
               <div class="circle-text">
@@ -835,6 +845,22 @@
             <div class="badge-tag-wrap">
               ${schemes.map(s => `<span class="tag-item ${scheme && s.toLowerCase().includes(scheme.toLowerCase()) ? 'active' : ''}">${s}</span>`).join('')}
             </div>
+
+            <!-- AI Institutional Intelligence Briefing Box -->
+            <div class="ai-review-wrapper">
+              <button class="btn-ai-review" id="btn-ai-${idx}" onclick="fetchAIReview(${idx}, event)">
+                <span>✨ Get AI Branch Briefing</span>
+              </button>
+             
+              <div class="ai-review-card" id="ai-card-${idx}">
+                <div class="ai-card-header">
+                  <span class="ai-badge">Institutional Intelligence</span>
+                  <span style="font-size: 10px; color: var(--text-muted); font-weight: 600;">Audited Rationale</span>
+                </div>
+                <div class="ai-review-body" id="ai-body-${idx}"></div>
+              </div>
+            </div>
+
           </div>
         `;
         list.appendChild(card);
