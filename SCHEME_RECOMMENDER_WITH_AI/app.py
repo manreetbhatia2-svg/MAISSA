@@ -35,13 +35,17 @@ def recommend():
 
     education_status = request.form["education_status"]
 
+    # Get user's target group
+    target_group = request.form["target_group"]
+
 
     # Get eligible schemes
     eligible_schemes = recommend_schemes(
         project_type,
         cost,
         income,
-        education_status
+        education_status,
+        target_group
     )
 
 
@@ -57,7 +61,8 @@ def recommend():
             project_type,
             cost,
             income,
-            education_status
+            education_status,
+            target_group
         )
 
 

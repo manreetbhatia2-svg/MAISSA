@@ -6,7 +6,8 @@
       "max_project_cost": 140000,
       "income_limit": 500000,
       "education_status": ["not_required"],
-      "max_loan": 125000
+      "max_loan": 125000,
+      "target_groups": ["Scheduled Castes"]
     },
     {
       "name": "Aajeevika Micro-Finance Yojana (AMY)",
@@ -14,7 +15,8 @@
       "max_project_cost": 140000,
       "income_limit": 500000,
       "education_status": ["not_required"],
-      "max_loan": 125000
+      "max_loan": 125000,
+      "target_groups": ["Scheduled Castes"]
     },
     {
       "name": "Term Loan (TL)",
@@ -23,7 +25,8 @@
       "max_project_cost": 5000000,
       "income_limit": 500000,
       "education_status": ["not_required"],
-      "max_loan": 4500000
+      "max_loan": 4500000,
+      "target_groups": ["Scheduled Castes"]
     },
     {
       "name": "Udyam Nidhi Yojana (UNY)",
@@ -31,14 +34,16 @@
       "max_project_cost": 500000,
       "income_limit": 500000,
       "education_status": ["not_required"],
-      "max_loan": 450000
+      "max_loan": 450000,
+      "target_groups": ["Scheduled Castes"]
     },
     {
       "name": "Educational Loan Scheme (ELS)",
       "project_type": ["education"],
       "income_limit": 500000,
       "education_status": ["student"],
-      "max_loan": 4000000
+      "max_loan": 4000000,
+      "target_groups": ["Scheduled Castes"]
     }
   ]
 }

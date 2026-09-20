@@ -24,7 +24,8 @@ def check_scheme(
     project_type,
     cost,
     income,
-    education_status
+    education_status,
+    target_group
 ):
 
     # ------------------------------------------------
@@ -33,8 +34,6 @@ def check_scheme(
 
     income_limit = scheme.get("income_limit")
 
-    # If income_limit is not None,
-    # check whether user's income exceeds it
     if income_limit is not None:
 
         if income > income_limit:
@@ -57,6 +56,7 @@ def check_scheme(
     # ------------------------------------------------
 
     if scheme.get("min_project_cost") is not None:
+
         if cost <= scheme["min_project_cost"]:
             return False
 
@@ -66,6 +66,7 @@ def check_scheme(
     # ------------------------------------------------
 
     if scheme.get("max_project_cost") is not None:
+
         if cost > scheme["max_project_cost"]:
             return False
 
@@ -87,6 +88,18 @@ def check_scheme(
 
 
     # ------------------------------------------------
+    # CHECK TARGET GROUP
+    # ------------------------------------------------
+
+    target_groups = scheme.get("target_groups")
+
+    if target_groups:
+
+        if target_group not in target_groups:
+            return False
+
+
+    # ------------------------------------------------
     # ALL CONDITIONS PASSED
     # ------------------------------------------------
 
@@ -101,7 +114,8 @@ def recommend_schemes(
     project_type,
     cost,
     income,
-    education_status
+    education_status,
+    target_group
 ):
 
     eligible_schemes = []
@@ -113,12 +127,11 @@ def recommend_schemes(
             project_type,
             cost,
             income,
-            education_status
+            education_status,
+            target_group
         ):
 
-            eligible_schemes.append(
-                scheme
-            )
+            eligible_schemes.append(scheme)
 
     return eligible_schemes
 
@@ -131,7 +144,8 @@ def get_overall_rejection_reason(
     project_type,
     cost,
     income,
-    education_status
+    education_status,
+    target_group
 ):
 
     reasons = []
@@ -149,9 +163,7 @@ def get_overall_rejection_reason(
 
     if income_limits:
 
-        maximum_income = max(
-            income_limits
-        )
+        maximum_income = max(income_limits)
 
         if income > maximum_income:
 
@@ -202,7 +214,6 @@ def get_overall_rejection_reason(
         ):
             continue
 
-
         min_cost = scheme.get(
             "min_project_cost",
             0
@@ -212,7 +223,6 @@ def get_overall_rejection_reason(
             "max_project_cost",
             float("inf")
         )
-
 
         if min_cost < cost <= max_cost:
 
@@ -241,6 +251,36 @@ def get_overall_rejection_reason(
                 "The education scheme requires "
                 "the applicant to have student status."
             )
+
+
+    # ------------------------------------------------
+    # 5. TARGET GROUP CHECK
+    # ------------------------------------------------
+
+    target_group_exists = False
+
+    for scheme in schemes:
+
+        scheme_target_groups = scheme.get(
+            "target_groups"
+        )
+
+        if not scheme_target_groups:
+            continue
+
+        if target_group in scheme_target_groups:
+
+            target_group_exists = True
+            break
+
+
+    if not target_group_exists:
+
+        reasons.append(
+            f"No available scheme was found "
+            f"for the selected target group "
+            f"'{target_group}'."
+        )
 
 
     # ------------------------------------------------

@@ -2,67 +2,48 @@
     "schemes": [
         {
             "name": "Micro Finance Scheme (MFS)",
-            "project_type": [
-                "business",
-                "income-generating"
-            ],
+            "project_type": ["business", "income-generating"],
             "max_project_cost": 140000,
             "income_limit": 500000,
-            "education_status": [
-                "not_required"
-            ],
-            "max_loan": 125000
+            "education_status": ["not_required"],
+            "max_loan": 125000,
+            "target_groups": ["Scheduled Castes"]
         },
         {
             "name": "Aajeevika Micro-Finance Yojana (AMY)",
-            "project_type": [
-                "business",
-                "income-generating"
-            ],
+            "project_type": ["business", "income-generating"],
             "max_project_cost": 140000,
             "income_limit": 500000,
-            "education_status": [
-                "not_required"
-            ],
-            "max_loan": 125000
+            "education_status": ["not_required"],
+            "max_loan": 125000,
+            "target_groups": ["Scheduled Castes"]
         },
         {
             "name": "Term Loan (TL)",
-            "project_type": [
-                "business",
-                "income-generating"
-            ],
+            "project_type": ["business", "income-generating"],
             "min_project_cost": 140000,
             "max_project_cost": 5000000,
             "income_limit": 500000,
-            "education_status": [
-                "not_required"
-            ],
-            "max_loan": 4500000
+            "education_status": ["not_required"],
+            "max_loan": 4500000,
+            "target_groups": ["Scheduled Castes"]
         },
         {
             "name": "Udyam Nidhi Yojana (UNY)",
-            "project_type": [
-                "business",
-                "small/micro activity"
-            ],
+            "project_type": ["business", "small/micro activity"],
             "max_project_cost": 500000,
             "income_limit": 500000,
-            "education_status": [
-                "not_required"
-            ],
-            "max_loan": 450000
+            "education_status": ["not_required"],
+            "max_loan": 450000,
+            "target_groups": ["Scheduled Castes"]
         },
         {
             "name": "Educational Loan Scheme (ELS)",
-            "project_type": [
-                "education"
-            ],
+            "project_type": ["education"],
             "income_limit": 500000,
-            "education_status": [
-                "student"
-            ],
-            "max_loan": 4000000
+            "education_status": ["student"],
+            "max_loan": 4000000,
+            "target_groups": ["Scheduled Castes"]
         },
         {
             "name": "Pre-Matric Scholarship for Children of Parents Engaged in Unclean Occupations",
