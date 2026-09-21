@@ -9,45 +9,80 @@ from recommender import (
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 @app.route("/recommend", methods=["GET", "POST"])
 def recommend():
     if request.method == "GET":
         return redirect("/")
 
-    project_type = request.form.get("project_type", "business").strip().lower()
+    # -----------------------------
+    # PROJECT TYPE
+    # -----------------------------
+    project_type = request.form.get(
+        "project_type",
+        "business"
+    ).strip().lower()
 
+    # -----------------------------
+    # PROJECT COST
+    # -----------------------------
     try:
         cost = float(request.form.get("cost", 500000))
     except (ValueError, TypeError):
         cost = 500000.0
 
+    # -----------------------------
+    # ANNUAL FAMILY INCOME
+    # -----------------------------
     try:
         income = float(request.form.get("income", 180000))
     except (ValueError, TypeError):
         income = 180000.0
 
-    raw_education = request.form.get("education_status", "not_student").strip()
-    raw_target = (request.form.get("target_group") or request.form.get("category") or "SC").strip()
+    # -----------------------------
+    # EDUCATION STATUS
+    # -----------------------------
+    raw_education = request.form.get(
+        "education_status",
+        "not_student"
+    ).strip().lower()
 
-    # 1. Normalize Target Group to match schemes.json
-    if raw_target.upper() == "SC" or "caste" in raw_target.lower():
-        target_group = "Scheduled Castes"
-    else:
-        target_group = raw_target
-
-    # 2. Normalize Education Status to match schemes.json
     if raw_education in ["not_student", "not_required"]:
         education_status = "not_required"
-    elif "student" in raw_education:
+
+    elif raw_education == "student":
         education_status = "student"
+
     else:
         education_status = raw_education
 
-    # Evaluate schemes
+    # -----------------------------
+    # TARGET GROUP
+    # -----------------------------
+    raw_target = request.form.get(
+        "target_group",
+        ""
+    ).strip()
+
+    # Convert dropdown value into
+    # the exact wording used in JSON
+    if raw_target == "Scheduled Castes":
+        target_group = "Scheduled Castes"
+
+    elif raw_target == "Children of parents engaged in unclean occupations":
+        target_group = "Children of parents engaged in unclean occupations"
+
+    else:
+        target_group = raw_target
+
+    # -----------------------------
+    # RECOMMEND SCHEMES
+    # -----------------------------
     eligible_schemes = recommend_schemes(
         project_type,
         cost,
@@ -56,6 +91,9 @@ def recommend():
         target_group
     )
 
+    # -----------------------------
+    # IF NO SCHEME MATCHES
+    # -----------------------------
     if eligible_schemes:
         reasons = []
     else:
@@ -67,11 +105,19 @@ def recommend():
             target_group
         )
 
+    # -----------------------------
+    # SHOW RESULTS
+    # -----------------------------
     return render_template(
         "results.html",
         eligible_schemes=eligible_schemes,
         reasons=reasons
     )
 
+
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True
+    )

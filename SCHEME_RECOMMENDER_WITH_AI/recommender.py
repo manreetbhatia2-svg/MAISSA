@@ -1,8 +1,9 @@
 import os
 import json
 
+
 # ==================================================
-# LOAD COMBINED SCHEME DATA (FIXED PATH)
+# LOAD COMBINED SCHEME DATA
 # ==================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,6 +20,34 @@ schemes = data["schemes"]
 
 
 # ==================================================
+# NORMALIZE TARGET GROUP
+# ==================================================
+
+def normalize_target_group(target_group):
+
+    if not target_group:
+        return ""
+
+    target_group = target_group.strip()
+
+    # Scheduled Caste
+    if target_group.upper() in [
+        "SC",
+        "SCHEDULED CASTE",
+        "SCHEDULED CASTES"
+    ]:
+        return "Scheduled Castes"
+
+    # Children of parents engaged in unclean occupations
+    if target_group.lower() == (
+        "children of parents engaged in unclean occupations"
+    ):
+        return "Children of parents engaged in unclean occupations"
+
+    return target_group
+
+
+# ==================================================
 # CHECK INDIVIDUAL SCHEME
 # ==================================================
 
@@ -30,6 +59,13 @@ def check_scheme(
     education_status,
     target_group
 ):
+
+    # ------------------------------------------------
+    # NORMALIZE TARGET GROUP
+    # ------------------------------------------------
+
+    target_group = normalize_target_group(target_group)
+
 
     # ------------------------------------------------
     # CHECK INCOME
@@ -58,9 +94,11 @@ def check_scheme(
     # CHECK MINIMUM PROJECT COST
     # ------------------------------------------------
 
-    if scheme.get("min_project_cost") is not None:
+    min_project_cost = scheme.get("min_project_cost")
 
-        if cost <= scheme["min_project_cost"]:
+    if min_project_cost is not None:
+
+        if cost <= min_project_cost:
             return False
 
 
@@ -68,9 +106,11 @@ def check_scheme(
     # CHECK MAXIMUM PROJECT COST
     # ------------------------------------------------
 
-    if scheme.get("max_project_cost") is not None:
+    max_project_cost = scheme.get("max_project_cost")
 
-        if cost > scheme["max_project_cost"]:
+    if max_project_cost is not None:
+
+        if cost > max_project_cost:
             return False
 
 
@@ -94,11 +134,20 @@ def check_scheme(
     # CHECK TARGET GROUP
     # ------------------------------------------------
 
-    target_groups = scheme.get("target_groups")
+    scheme_target_groups = scheme.get(
+        "target_groups",
+        []
+    )
 
-    if target_groups:
+    if scheme_target_groups:
 
-        if target_group not in target_groups:
+        # Normalize the values stored in JSON
+        normalized_scheme_groups = [
+            normalize_target_group(group)
+            for group in scheme_target_groups
+        ]
+
+        if target_group not in normalized_scheme_groups:
             return False
 
 
@@ -122,6 +171,10 @@ def recommend_schemes(
 ):
 
     eligible_schemes = []
+
+    target_group = normalize_target_group(
+        target_group
+    )
 
     for scheme in schemes:
 
@@ -152,6 +205,10 @@ def get_overall_rejection_reason(
 ):
 
     reasons = []
+
+    target_group = normalize_target_group(
+        target_group
+    )
 
 
     # ------------------------------------------------
@@ -218,14 +275,20 @@ def get_overall_rejection_reason(
             continue
 
         min_cost = scheme.get(
-            "min_project_cost",
-            0
+            "min_project_cost"
         )
 
         max_cost = scheme.get(
-            "max_project_cost",
-            float("inf")
+            "max_project_cost"
         )
+
+        # No minimum restriction
+        if min_cost is None:
+            min_cost = float("-inf")
+
+        # No maximum restriction
+        if max_cost is None:
+            max_cost = float("inf")
 
         if min_cost < cost <= max_cost:
 
@@ -265,13 +328,16 @@ def get_overall_rejection_reason(
     for scheme in schemes:
 
         scheme_target_groups = scheme.get(
-            "target_groups"
+            "target_groups",
+            []
         )
 
-        if not scheme_target_groups:
-            continue
+        normalized_scheme_groups = [
+            normalize_target_group(group)
+            for group in scheme_target_groups
+        ]
 
-        if target_group in scheme_target_groups:
+        if target_group in normalized_scheme_groups:
 
             target_group_exists = True
             break
@@ -280,9 +346,8 @@ def get_overall_rejection_reason(
     if not target_group_exists:
 
         reasons.append(
-            f"No available scheme was found "
-            f"for the selected target group "
-            f"'{target_group}'."
+            "No available scheme was found "
+            "for the selected target group."
         )
 
 
@@ -299,3 +364,4 @@ def get_overall_rejection_reason(
 
 
     return reasons
+

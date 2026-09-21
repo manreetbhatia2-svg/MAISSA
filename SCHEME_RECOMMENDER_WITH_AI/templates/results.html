@@ -347,8 +347,14 @@
   <nav class="global-nav">
     <a href="/" class="brand-group">
       <div class="brand-badge">M</div>
-      <span class="brand-name">MAISSA <span style="font-size: 11px; color: var(--accent-lavender); font-weight: 600;">Ecosystem</span></span>
+      <span class="brand-name">
+        MAISSA
+        <span style="font-size: 11px; color: var(--accent-lavender); font-weight: 600;">
+          Ecosystem
+        </span>
+      </span>
     </a>
+
     <div class="nav-links">
       <a href="/" class="nav-link-btn active">1. Scheme Matcher</a>
       <a href="/locator" class="nav-link-btn">2. Channel Locator</a>
@@ -357,67 +363,98 @@
   </nav>
 
   <main class="main-container">
-    
+
     <header class="brand-header">
       <div class="brand-info" style="display: flex; align-items: center; gap: 14px;">
         <div class="emblem-icon">⚡</div>
+
         <div>
           <h1 class="brand-title">Scheme Recommendation</h1>
-          <span class="brand-subtitle">Evaluation & Eligibility Overview</span>
+          <span class="brand-subtitle">
+            Evaluation & Eligibility Overview
+          </span>
         </div>
       </div>
     </header>
 
     {% if eligible_schemes %}
+
       <p style="font-size: 13.5px; color: var(--text-muted);">
         Based on your venture parameters, the following affirmative credit schemes qualify for direct application:
       </p>
 
       <div class="schemes-list">
+
         {% for scheme in eligible_schemes %}
+
           <div class="scheme-card">
-            
+
             <div class="scheme-card-top">
+
               <div class="scheme-info">
-                <h3><span>✓</span> {{ scheme.name }}</h3>
+                <h3>
+                  <span>✓</span> {{ scheme.name }}
+                </h3>
               </div>
-              <div class="quota-pill">
-                {% if scheme.max_loan is not none %}
+
+              <!-- Show Lending Cap ONLY when max_loan exists -->
+              {% if scheme.max_loan is not none %}
+                <div class="quota-pill">
                   Max ₹{{ "{:,.0f}".format(scheme.max_loan) }}
-                {% else %}
-                  Lending Cap Unspecified
-                {% endif %}
-              </div>
+                </div>
+              {% endif %}
+
             </div>
 
             <!-- Inter-Module Handoff Strip -->
             <div class="scheme-card-actions">
-              <a href="/locator?scheme={{ scheme.name | urlencode }}" class="btn-action-branch">
-  📍 Locate Accredited Branches →
-</a>
-              <a 
-                href="/calculator/?amount={{ scheme.max_loan or 500000 }}&scheme={{ scheme.name | urlencode }}&interest={{ scheme.interest_rate or 4.0 }}" 
-                class="btn-action-emi" 
-                target="_blank"
+
+              <a
+                href="/locator?scheme={{ scheme.name | urlencode }}"
+                class="btn-action-branch"
               >
-                🧮 Estimate Subsidized EMI →
+                📍 Locate Accredited Branches →
               </a>
+
+              <!-- Show EMI calculator ONLY when max_loan exists -->
+              {% if scheme.max_loan is not none %}
+                <a
+                  href="/calculator/?amount={{ scheme.max_loan }}&scheme={{ scheme.name | urlencode }}&interest={{ scheme.interest_rate or 4.0 }}"
+                  class="btn-action-emi"
+                  target="_blank"
+                >
+                  🧮 Estimate Subsidized EMI →
+                </a>
+              {% endif %}
+
             </div>
 
           </div>
+
         {% endfor %}
+
       </div>
 
     {% else %}
+
       <div class="no-match-box">
+
         <h2>No Eligible Schemes Identified</h2>
-        <p>Your inputs do not qualify under current DBT lending rules:</p>
+
+        <p>
+          Your inputs do not qualify under current DBT lending rules:
+        </p>
+
         <ul class="reasons-list">
+
           {% for reason in reasons %}
             <li>{{ reason }}</li>
           {% endfor %}
+
         </ul>
+
       </div>
+
     {% endif %}
 
     <a href="/" style="text-decoration: none;">
