@@ -52,9 +52,13 @@ export function LoanInputs({
           value={loanType}
           onChange={(e) => onLoanTypeChange(e.target.value as LoanType)}
         >
-          {(Object.keys(presets) as LoanType[]).map((type) => (
-            <option key={type} value={type}>{presets[type].label}</option>
-          ))}
+          {(Object.keys(presets) as LoanType[])
+  .filter((type) => type === "education" || type === "business")
+  .map((type) => (
+    <option key={type} value={type}>
+      {presets[type].label}
+    </option>
+  ))}
         </select>
       </div>
 
