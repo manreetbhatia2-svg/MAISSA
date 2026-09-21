@@ -91,54 +91,54 @@ export default function App() {
         </a>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <a
-            href="http://127.0.0.1:5000"
-            style={{
-              padding: "6px 14px",
-              borderRadius: "8px",
-              fontSize: "12px",
-              fontWeight: 700,
-              textDecoration: "none",
-              color: "#FFFFFF",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            1. Scheme Matcher
-          </a>
-          <a
-            href="/locator"
-            style={{
-              padding: "6px 14px",
-              borderRadius: "8px",
-              fontSize: "12px",
-              fontWeight: 700,
-              textDecoration: "none",
-              color: "#FFFFFF",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            2. Channel Locator
-          </a>
-          <a
-  href="/calculator/"
-  style={{
-    padding: "6px 14px",
-    borderRadius: "8px",
-    fontSize: "12px",
-    fontWeight: 700,
-    textDecoration: "none",
-    color: "#FFFFFF",
-    background: "#4F46E5",
-    border: "1px solid #4F46E5",
-  }}
->
-  3. EMI Calculator
-</a>
-        </div>
+  <a
+    href="/"
+    style={{
+      padding: "6px 14px",
+      borderRadius: "8px",
+      fontSize: "12px",
+      fontWeight: 700,
+      textDecoration: "none",
+      color: "#FFFFFF",
+      background: "rgba(255,255,255,0.06)",
+      border: "1px solid rgba(255,255,255,0.12)",
+      transition: "all 0.2s ease",
+    }}
+  >
+    1. Scheme Matcher
+  </a>
+  <a
+    href="/locator"
+    style={{
+      padding: "6px 14px",
+      borderRadius: "8px",
+      fontSize: "12px",
+      fontWeight: 700,
+      textDecoration: "none",
+      color: "#FFFFFF",
+      background: "rgba(255,255,255,0.06)",
+      border: "1px solid rgba(255,255,255,0.12)",
+      transition: "all 0.2s ease",
+    }}
+  >
+    2. Channel Locator
+  </a>
+  <a
+    href="/calculator/"
+    style={{
+      padding: "6px 14px",
+      borderRadius: "8px",
+      fontSize: "12px",
+      fontWeight: 700,
+      textDecoration: "none",
+      color: "#FFFFFF",
+      background: "#4F46E5",
+      border: "1px solid #4F46E5",
+    }}
+  >
+    3. EMI Calculator
+  </a>
+</div>
       </nav>
 
       {/* Dynamic Affirmative Context Notification Strip */}
