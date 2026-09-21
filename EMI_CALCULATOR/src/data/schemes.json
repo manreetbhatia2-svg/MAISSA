@@ -1,65 +1,81 @@
 [
   {
-    "id": "pmay",
-    "name": "PMAY interest subsidy",
-    "description": "Indicative housing-loan subsidy placeholder.",
-    "rate": 6.5,
-    "minAmount": 100000,
-    "maxAmount": 2500000,
-    "subsidy": 150000
-  },
-  {
-    "id": "mudra-shishu",
-    "name": "MUDRA Shishu",
-    "description": "Indicative micro-business loan preset.",
-    "rate": 8,
-    "minAmount": 10000,
-    "maxAmount": 50000,
-    "subsidy": 0
-  },
-  {
-    "id": "mudra-kishor",
-    "name": "MUDRA Kishor",
-    "description": "Indicative micro-business loan preset.",
-    "rate": 9,
-    "minAmount": 50000,
-    "maxAmount": 500000,
-    "subsidy": 0
-  },
-  {
-    "id": "mudra-tarun",
-    "name": "MUDRA Tarun",
-    "description": "Indicative micro-business loan preset.",
-    "rate": 10,
-    "minAmount": 500000,
-    "maxAmount": 1000000,
-    "subsidy": 0
-  },
-  {
-    "id": "stand-up-india",
-    "name": "Stand-Up India",
-    "description": "Indicative enterprise-loan preset.",
-    "rate": 9.5,
-    "minAmount": 1000000,
-    "maxAmount": 10000000,
-    "subsidy": 0
-  },
-  {
-    "id": "pm-svanidhi",
-    "name": "PM SVANidhi",
-    "description": "Indicative street-vendor loan preset.",
-    "rate": 7,
-    "minAmount": 10000,
-    "maxAmount": 50000,
-    "subsidy": 0
-  },
-  {
-    "id": "education-interest-subsidy",
-    "name": "Education loan interest subsidy",
-    "description": "Indicative education-loan subsidy placeholder.",
-    "rate": 7.5,
-    "minAmount": 50000,
-    "maxAmount": 7500000,
-    "subsidy": 50000
-  }
+    "name": "Micro Finance Scheme (MFS)",
+    "project_type": ["business", "income-generating"],
+    "max_project_cost": 140000,
+    "income_limit": 500000,
+    "education_status": ["not_required"],
+    "max_loan": 125000,
+    "target_groups": ["Scheduled Castes"]
+},
+{
+    "name": "Aajeevika Micro-Finance Yojana (AMY)",
+    "project_type": ["business", "income-generating"],
+    "max_project_cost": 140000,
+    "income_limit": 500000,
+    "education_status": ["not_required"],
+    "max_loan": 125000,
+    "target_groups": ["Scheduled Castes"]
+},
+{
+    "name": "Term Loan (TL)",
+    "project_type": ["business", "income-generating"],
+    "min_project_cost": 140000,
+    "max_project_cost": 5000000,
+    "income_limit": 500000,
+    "education_status": ["not_required"],
+    "max_loan": 4500000,
+    "target_groups": ["Scheduled Castes"]
+},
+{
+    "name": "Udyam Nidhi Yojana (UNY)",
+    "project_type": ["business", "small/micro activity"],
+    "max_project_cost": 500000,
+    "income_limit": 500000,
+    "education_status": ["not_required"],
+    "max_loan": 450000,
+    "target_groups": ["Scheduled Castes"]
+},
+{
+    "name": "Educational Loan Scheme (ELS)",
+    "project_type": ["education"],
+    "income_limit": 500000,
+    "education_status": ["student"],
+    "max_loan": 4000000,
+    "target_groups": ["Scheduled Castes"]
+},
+{
+    "name": "Pre-Matric Scholarship for Children of Parents Engaged in Unclean Occupations",
+    "project_type": [
+        "education"
+    ],
+    "max_project_cost": null,
+    "income_limit": null,
+    "education_status": [
+        "student"
+    ],
+    "max_loan": null,
+    "target_groups": [
+        "Children of parents engaged in unclean occupations"
+    ],
+    "source_url": "https://socialwelfare.maharashtra.gov.in/en/scheme/pre-matric-scholarship-for-children-of-parents-engaged-in-unclean-occupations/"
+},
+{
+    "name": "Government of India Post-Matric Scholarship",
+    "project_type": [
+        "education"
+    ],
+    "max_project_cost": null,
+    "income_limit": 250000,
+    "education_status": [
+        "student"
+    ],
+    "max_loan": null,
+    "target_groups": [
+        "Scheduled Castes",
+        "Neo-Buddhist"
+    ],
+    "source_url": "https://socialwelfare.maharashtra.gov.in/en/scheme/government-of-india-post-matric-scholarship/"
+}
+
 ]
