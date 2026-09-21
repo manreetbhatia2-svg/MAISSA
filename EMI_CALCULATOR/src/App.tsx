@@ -63,7 +63,7 @@ export default function App() {
         }}
       >
         <a
-          href="http://127.0.0.1:5000"
+          href="/"
           style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
         >
           <div
@@ -80,65 +80,65 @@ export default function App() {
               fontSize: "15px",
             }}
           >
-            M
+            L
           </div>
           <span style={{ color: "#FFFFFF", fontWeight: 800, fontSize: "15px", letterSpacing: "-0.2px" }}>
-            MAISSA{" "}
+            LoanRoute{" "}
             <span style={{ fontSize: "11px", color: "#818CF8", fontWeight: 600, marginLeft: "4px" }}>
-              Credit Ecosystem
+              Ecosystem
             </span>
           </span>
         </a>
 
         <div style={{ display: "flex", gap: "10px" }}>
-  <a
-    href="/"
-    style={{
-      padding: "6px 14px",
-      borderRadius: "8px",
-      fontSize: "12px",
-      fontWeight: 700,
-      textDecoration: "none",
-      color: "#FFFFFF",
-      background: "rgba(255,255,255,0.06)",
-      border: "1px solid rgba(255,255,255,0.12)",
-      transition: "all 0.2s ease",
-    }}
-  >
-    1. Scheme Matcher
-  </a>
-  <a
-    href="/locator"
-    style={{
-      padding: "6px 14px",
-      borderRadius: "8px",
-      fontSize: "12px",
-      fontWeight: 700,
-      textDecoration: "none",
-      color: "#FFFFFF",
-      background: "rgba(255,255,255,0.06)",
-      border: "1px solid rgba(255,255,255,0.12)",
-      transition: "all 0.2s ease",
-    }}
-  >
-    2. Channel Locator
-  </a>
-  <a
-    href="/calculator/"
-    style={{
-      padding: "6px 14px",
-      borderRadius: "8px",
-      fontSize: "12px",
-      fontWeight: 700,
-      textDecoration: "none",
-      color: "#FFFFFF",
-      background: "#4F46E5",
-      border: "1px solid #4F46E5",
-    }}
-  >
-    3. EMI Calculator
-  </a>
-</div>
+          <a
+            href="/"
+            style={{
+              padding: "6px 14px",
+              borderRadius: "8px",
+              fontSize: "12px",
+              fontWeight: 700,
+              textDecoration: "none",
+              color: "#FFFFFF",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              transition: "all 0.2s ease",
+            }}
+          >
+            1. Scheme Matcher
+          </a>
+          <a
+            href="/locator"
+            style={{
+              padding: "6px 14px",
+              borderRadius: "8px",
+              fontSize: "12px",
+              fontWeight: 700,
+              textDecoration: "none",
+              color: "#FFFFFF",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              transition: "all 0.2s ease",
+            }}
+          >
+            2. Channel Locator
+          </a>
+          <a
+            href="/calculator/"
+            style={{
+              padding: "6px 14px",
+              borderRadius: "8px",
+              fontSize: "12px",
+              fontWeight: 700,
+              textDecoration: "none",
+              color: "#FFFFFF",
+              background: "#4F46E5",
+              border: "1px solid #4F46E5",
+            }}
+          >
+            3. EMI Calculator
+          </a>
+        </div>
       </nav>
 
       {/* Dynamic Affirmative Context Notification Strip */}

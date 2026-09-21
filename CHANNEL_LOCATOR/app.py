@@ -16,7 +16,7 @@ COMBINED_SCHEMES_FILE = os.path.abspath(
 )
 
 def load_combined_schemes():
-    """Loads the 7 master schemes from combined_schemes.json"""
+    """Loads the master schemes from combined_schemes.json"""
     if os.path.exists(COMBINED_SCHEMES_FILE):
         try:
             with open(COMBINED_SCHEMES_FILE, "r", encoding="utf-8") as f:
@@ -52,7 +52,7 @@ else:
     print("Gemini Notice: GEMINI_API_KEY environment variable not detected.")
 
 # -------------------------------------------------------------
-# DEFAULT SEED PARTNERS DATASET (Aligned with Master 7 Schemes)
+# DEFAULT SEED PARTNERS DATASET (Aligned with Schemes)
 # -------------------------------------------------------------
 DEFAULT_PARTNERS = [
     {
@@ -242,7 +242,6 @@ def get_ai_partner_review():
     schemes = ", ".join(data.get("supported_schemes", ["Social Credit"]))
     dist = data.get("distance_km", 2.5)
 
-    # 1. Restored your original, highly detailed prompt
     prompt = f"""
     You are an encouraging, expert community banking advisor helping a first-time entrepreneur.
     Write a specific, friendly, and practical review for this particular branch:
@@ -258,15 +257,14 @@ def get_ai_partner_review():
     1. Do NOT use complex banking jargon. Keep it conversational.
     2. Make the review 100% specific to {name}.
     3. Format the response with exactly these 4 clear bullet points:
-       • Best Suited For: (What kind of business or project this specific branch funds best)
-       • Why Their Numbers Help You: (Explain in simple words why low unpaid loans and ₹{quota}L available quota makes getting approved easy here)
-       • Approval Speed: (State the ~{tat} days timeline clearly)
-       • Next Step / Who to Ask For: (Which specific counter or officer to meet)
+        • Best Suited For: (What kind of business or project this specific branch funds best)
+        • Why Their Numbers Help You: (Explain in simple words why low unpaid loans and ₹{quota}L available quota makes getting approved easy here)
+        • Approval Speed: (State the ~{tat} days timeline clearly)
+        • Next Step / Who to Ask For: (Which specific counter or officer to meet)
     """
     
     if ai_model:
         try:
-            # 2. Added temperature=0.8 to force unique, creative answers every time!
             response = ai_model.generate_content(
                 prompt,
                 generation_config={"temperature": 0.8}
@@ -276,7 +274,6 @@ def get_ai_partner_review():
         except Exception as e:
             print("Gemini API Error:", e)
 
-    # 3. Safe Fallback just in case you hit an API rate limit
     return jsonify({"review": f"• Best Suited For: Priority community financing under {schemes}.\n• Why Their Numbers Help You: Clean recovery record ({npa_rate * 100:.1f}%) with ₹{quota} Lakhs unexhausted funding.\n• Approval Speed: Approximately {tat} days.\n• Next Step: Visit the desk directly."})
 
 if __name__ == "__main__":
