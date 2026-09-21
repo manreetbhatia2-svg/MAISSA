@@ -20,7 +20,7 @@ DIST_DIR = os.path.join(BASE_DIR, "EMI_CALCULATOR", "dist")
 COMBINED_SCHEMES_FILE = os.path.join(BASE_DIR, "combined_schemes.json")
 
 # -------------------------------------------------------------
-# GEMINI SETUP
+# STABLE GEMINI MODEL CONFIGURATION
 # -------------------------------------------------------------
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 ai_model = None
@@ -28,13 +28,14 @@ ai_model = None
 if GEMINI_API_KEY:
     try:
         genai.configure(api_key=GEMINI_API_KEY)
-        supported_models = [m.name for m in genai.list_models() if "generateContent" in m.supported_generation_methods]
-        chosen_model = next((m for m in supported_models if "flash" in m), supported_models[0] if supported_models else "gemini-1.5-flash")
-        ai_model = genai.GenerativeModel(chosen_model)
+        # Directly use the standard stable flash model
+        ai_model = genai.GenerativeModel("gemini-1.5-flash")
+        print("✓ Gemini AI Model Active: gemini-1.5-flash")
     except Exception as e:
-        print(f"Gemini error: {e}")
+        print(f"Gemini configuration error: {e}")
         ai_model = None
-
+else:
+    print("Gemini Notice: GEMINI_API_KEY environment variable not detected.")
 # -------------------------------------------------------------
 # CHANNEL LOCATOR DATA HANDLING
 # -------------------------------------------------------------
@@ -218,4 +219,5 @@ def serve_calculator_files(filename):
     return send_from_directory(DIST_DIR, "index.html")
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
