@@ -1,45 +1,53 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
+from flask_cors import CORS
 
 from recommender import (
     recommend_schemes,
     get_overall_rejection_reason
 )
 
-
-# Create Flask application
 app = Flask(__name__)
-
-
-# ==================================================
-# HOME PAGE
-# ==================================================
+CORS(app)
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# ==================================================
-# RECOMMENDATION
-# ==================================================
-
-@app.route("/recommend", methods=["POST"])
+@app.route("/recommend", methods=["GET", "POST"])
 def recommend():
+    if request.method == "GET":
+        return redirect("/")
 
-    # Get data from the HTML form
-    project_type = request.form["project_type"]
+    project_type = request.form.get("project_type", "business").strip().lower()
 
-    cost = float(request.form["cost"])
+    try:
+        cost = float(request.form.get("cost", 500000))
+    except (ValueError, TypeError):
+        cost = 500000.0
 
-    income = float(request.form["income"])
+    try:
+        income = float(request.form.get("income", 180000))
+    except (ValueError, TypeError):
+        income = 180000.0
 
-    education_status = request.form["education_status"]
+    raw_education = request.form.get("education_status", "not_student").strip()
+    raw_target = (request.form.get("target_group") or request.form.get("category") or "SC").strip()
 
-    # Get user's target group
-    target_group = request.form["target_group"]
+    # 1. Normalize Target Group to match schemes.json
+    if raw_target.upper() == "SC" or "caste" in raw_target.lower():
+        target_group = "Scheduled Castes"
+    else:
+        target_group = raw_target
 
+    # 2. Normalize Education Status to match schemes.json
+    if raw_education in ["not_student", "not_required"]:
+        education_status = "not_required"
+    elif "student" in raw_education:
+        education_status = "student"
+    else:
+        education_status = raw_education
 
-    # Get eligible schemes
+    # Evaluate schemes
     eligible_schemes = recommend_schemes(
         project_type,
         cost,
@@ -48,15 +56,9 @@ def recommend():
         target_group
     )
 
-
-    # If no schemes are found,
-    # get the overall rejection reasons
     if eligible_schemes:
-
         reasons = []
-
     else:
-
         reasons = get_overall_rejection_reason(
             project_type,
             cost,
@@ -65,18 +67,11 @@ def recommend():
             target_group
         )
 
-
-    # Send results to results.html
     return render_template(
         "results.html",
         eligible_schemes=eligible_schemes,
         reasons=reasons
     )
 
-
-# ==================================================
-# RUN FLASK
-# ==================================================
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=True)

@@ -44,11 +44,79 @@
       min-height: 100vh;
       background: radial-gradient(1200px 800px at 50% -10%, var(--bg-gradient-top) 0%, var(--bg-outer-dark) 55%, var(--bg-gradient-bottom) 100%);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      justify-content: flex-start;
+      padding: 90px 20px 50px 20px;
     }
 
+    /* Top Ecosystem Bar */
+    .global-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 58px;
+      background: rgba(22, 21, 56, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 99999;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .brand-name {
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-link-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.2s ease;
+    }
+
+    .nav-link-btn.active, .nav-link-btn:hover {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
+    /* Main Container */
     .main-container {
       width: 100%;
       max-width: 860px;
@@ -96,7 +164,7 @@
     .schemes-list {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       margin: 20px 0 28px 0;
     }
 
@@ -105,11 +173,10 @@
       border: 1.5px solid var(--border-subtle);
       border-left: 5px solid var(--primary-blue);
       border-radius: 14px;
-      padding: 18px 22px;
+      padding: 20px 22px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
+      flex-direction: column;
+      gap: 14px;
       transition: all 0.2s ease;
     }
 
@@ -121,8 +188,15 @@
       border-left-color: var(--primary-blue);
     }
 
+    .scheme-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
     .scheme-info h3 {
-      font-size: 15.5px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--text-main);
       display: flex;
@@ -144,6 +218,60 @@
       padding: 8px 14px;
       border-radius: 10px;
       white-space: nowrap;
+    }
+
+    /* Inter-Module Action Buttons */
+    .scheme-card-actions {
+      display: flex;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn-action-branch {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 14px;
+      background: var(--primary-blue);
+      color: #FFFFFF;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-action-branch:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-action-emi {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 14px;
+      background: var(--accent-soft-blue);
+      color: var(--primary-blue);
+      border: 1px solid #C7D2FE;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-action-emi:hover {
+      background: #E0E7FF;
+      transform: translateY(-1px);
     }
 
     .no-match-box {
@@ -192,9 +320,9 @@
     .btn-back {
       width: 100%;
       padding: 15px 24px;
-      background: var(--primary-blue);
-      color: #FFFFFF;
-      border: none;
+      background: #F1F5F9;
+      color: var(--text-main);
+      border: 1.5px solid var(--border-subtle);
       border-radius: 14px;
       font-size: 14px;
       font-weight: 700;
@@ -205,21 +333,33 @@
       gap: 8px;
       transition: all 0.2s ease;
       text-decoration: none;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
     }
 
     .btn-back:hover {
-      background: var(--primary-hover);
-      transform: translateY(-2px);
+      background: #E2E8F0;
+      transform: translateY(-1px);
     }
   </style>
 </head>
 <body>
 
+  <!-- Persistent Top Header -->
+  <nav class="global-nav">
+    <a href="/" class="brand-group">
+      <div class="brand-badge">M</div>
+      <span class="brand-name">MAISSA <span style="font-size: 11px; color: var(--accent-lavender); font-weight: 600;">Ecosystem</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link-btn active">1. Scheme Matcher</a>
+      <a href="/locator" class="nav-link-btn">2. Channel Locator</a>
+      <a href="/calculator/" class="nav-link-btn">3. Calculate EMI</a>
+    </div>
+  </nav>
+
   <main class="main-container">
-   
+    
     <header class="brand-header">
-      <div class="brand-info">
+      <div class="brand-info" style="display: flex; align-items: center; gap: 14px;">
         <div class="emblem-icon">⚡</div>
         <div>
           <h1 class="brand-title">Scheme Recommendation</h1>
@@ -230,22 +370,40 @@
 
     {% if eligible_schemes %}
       <p style="font-size: 13.5px; color: var(--text-muted);">
-        Based on your venture parameters, the following social credit schemes qualify for application:
+        Based on your venture parameters, the following affirmative credit schemes qualify for direct application:
       </p>
 
       <div class="schemes-list">
         {% for scheme in eligible_schemes %}
           <div class="scheme-card">
-            <div class="scheme-info">
-              <h3><span>✓</span> {{ scheme.name }}</h3>
+            
+            <div class="scheme-card-top">
+              <div class="scheme-info">
+                <h3><span>✓</span> {{ scheme.name }}</h3>
+              </div>
+              <div class="quota-pill">
+                {% if scheme.max_loan is not none %}
+                  Max ₹{{ "{:,.0f}".format(scheme.max_loan) }}
+                {% else %}
+                  Lending Cap Unspecified
+                {% endif %}
+              </div>
             </div>
-            <div class="quota-pill">
-              {% if scheme.max_loan is not none %}
-                Max ₹{{ "{:,.0f}".format(scheme.max_loan) }}
-              {% else %}
-                Lending Cap Unspecified
-              {% endif %}
+
+            <!-- Inter-Module Handoff Strip -->
+            <div class="scheme-card-actions">
+              <a href="/locator?scheme={{ scheme.name | urlencode }}" class="btn-action-branch">
+  📍 Locate Accredited Branches →
+</a>
+              <a 
+                href="/calculator/?amount={{ scheme.max_loan or 500000 }}&scheme={{ scheme.name | urlencode }}&interest={{ scheme.interest_rate or 4.0 }}" 
+                class="btn-action-emi" 
+                target="_blank"
+              >
+                🧮 Estimate Subsidized EMI →
+              </a>
             </div>
+
           </div>
         {% endfor %}
       </div>

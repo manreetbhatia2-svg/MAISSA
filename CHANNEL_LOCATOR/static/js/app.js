@@ -73,7 +73,7 @@ function saveProfile() {
   localStorage.setItem("sih_type", type);
 
   // Background sync if backend is active
-  fetch("http://127.0.0.1:5002/api/user/profile", {
+  fetch("/api/user/profile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ user_name: name, user_type: type })
@@ -119,7 +119,7 @@ async function loadPartners() {
 
   try {
     // Queries your Python Flask Server
-    const res = await fetch(`http://127.0.0.1:5002/api/partners/locate?lat=${userLat}&lng=${userLng}&scheme=${encodeURIComponent(scheme)}`);
+    const res = await fetch(`/api/partners/locate?lat=${userLat}&lng=${userLng}&scheme=${encodeURIComponent(scheme)}`);
     const data = await res.json();
     partners = data.data;
   } catch (err) {

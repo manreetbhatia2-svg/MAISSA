@@ -1,10 +1,11 @@
+<a href="/">1. Scheme Matcher</a>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Scheme Recommender</title>
+    <title>Scheme Recommender | MAISSA</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +25,73 @@
                 #f5f3ff;
             min-height: 100vh;
             color: #27233a;
-            padding: 40px 20px;
+            padding: 80px 20px 40px 20px;
+        }
+
+        /* Top Ecosystem Navigation Bar */
+        .global-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: #161538;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            z-index: 99999;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-badge {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6c4ce8, #818cf8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .brand-name {
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-link-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link-btn.active, .nav-link-btn:hover {
+            background: #6c4ce8;
+            border-color: #6c4ce8;
         }
 
         .container {
@@ -145,21 +212,67 @@
             color: #413a58;
         }
 
-        input {
-            width: 100%;
-            padding: 14px 15px;
-            border-radius: 13px;
+        /* Input with stepper container */
+        .stepper-input-wrap {
+            display: flex;
+            align-items: center;
             border: 1.5px solid #ded9eb;
+            border-radius: 13px;
+            background: #fff;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        .stepper-input-wrap:focus-within {
+            border-color: #6c4ce8;
+            box-shadow: 0 0 0 3px rgba(108, 76, 232, 0.09);
+        }
+
+        .stepper-input-wrap input {
+            flex: 1;
+            padding: 14px 15px;
+            border: none;
             font-family: inherit;
             font-size: 14px;
             outline: none;
-            transition: 0.2s;
-            background: #fff;
+            background: transparent;
+            width: 100%;
+            /* Hide native spinners so custom steppers control it */
+            -moz-appearance: textfield;
         }
 
-        input:focus {
-            border-color: #6c4ce8;
-            box-shadow: 0 0 0 3px rgba(108, 76, 232, 0.09);
+        .stepper-input-wrap input::-webkit-outer-spin-button,
+        .stepper-input-wrap input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .stepper-controls {
+            display: flex;
+            flex-direction: column;
+            border-left: 1.5px solid #ded9eb;
+            background: #faf9fd;
+        }
+
+        .stepper-btn {
+            border: none;
+            background: transparent;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #6c4ce8;
+            cursor: pointer;
+            transition: 0.15s;
+            user-select: none;
+            line-height: 1;
+        }
+
+        .stepper-btn:hover {
+            background: #f2eeff;
+        }
+
+        .stepper-btn:first-child {
+            border-bottom: 1px solid #ded9eb;
         }
 
         input::placeholder {
@@ -261,356 +374,380 @@
 
 <body>
 
-<div class="container">
+    <!-- Persistent Ecosystem Header -->
+    <nav class="global-nav">
+        <a href="http://127.0.0.1:5000" class="brand-group">
+            <div class="brand-badge">M</div>
+            <span class="brand-name">MAISSA <span style="font-size: 11px; color: #a5b4fc; font-weight: 600;">Ecosystem</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="http://127.0.0.1:5000" class="nav-link-btn active">1. Scheme Matcher</a>
+            <a href="/locator" class="nav-link-btn">2. Channel Locator</a>
+            <a href="http://127.0.0.1:5000/calculator/" class="nav-link-btn">3. EMI Calculator</a>
+        </div>
+    </nav>
 
-    <div class="card">
+    <div class="container">
 
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo">⚡</div>
+        <div class="card">
 
-            <div>
-                <h1>Scheme Recommender</h1>
-                <p>Social Credit Scheme Matching Platform</p>
+            <!-- HEADER -->
+            <div class="header">
+                <div class="logo">⚡</div>
+
+                <div>
+                    <h1>Scheme Recommender</h1>
+                    <p>Social Credit Scheme Matching Platform</p>
+                </div>
             </div>
+
+            <form action="/recommend" method="POST">
+
+                <!-- DOMAIN -->
+                <div class="section">
+
+                    <div class="section-title">
+                        Select Your Requirement
+                    </div>
+
+                    <div class="domain-options">
+
+                        <button
+                            type="button"
+                            class="domain-btn active"
+                            id="businessBtn"
+                            onclick="selectDomain('business')">
+
+                            <strong>Business Enterprise</strong>
+                            <span>
+                                Loans and financial support for business activities
+                            </span>
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="domain-btn"
+                            id="educationBtn"
+                            onclick="selectDomain('education')">
+
+                            <strong>Higher Education</strong>
+                            <span>
+                                Financial assistance for higher education
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="project_type"
+                        id="project_type"
+                        value="business"
+                        required
+                    >
+
+                </div>
+
+                <!-- FINANCIAL DETAILS -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        Financial Details
+                    </div>
+
+                    <div class="form-grid">
+
+                        <!-- PROJECT COST -->
+                        <div class="field">
+
+                            <label for="cost">
+                                Estimated Project Outlay
+                            </label>
+
+                            <div class="stepper-input-wrap">
+                                <input
+                                    type="number"
+                                    id="cost"
+                                    name="cost"
+                                    min="0"
+                                    step="any"
+                                    placeholder="Enter any amount (e.g. 525000)"
+                                    value="500000"
+                                    required
+                                    oninput="formatINR('cost', 'costPreview')"
+                                    onkeydown="handleArrowKeys(event, 'cost', 'costPreview')"
+                                >
+                                <div class="stepper-controls">
+                                    <button type="button" class="stepper-btn" onclick="stepAmount('cost', 'costPreview', 100000)" title="Add ₹1,00,000">▲</button>
+                                    <button type="button" class="stepper-btn" onclick="stepAmount('cost', 'costPreview', -100000)" title="Subtract ₹1,00,000">▼</button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="preview"
+                                id="costPreview">
+                                ≈ ₹ 5,00,000
+                            </div>
+
+                        </div>
+
+                        <!-- FAMILY INCOME -->
+                        <div class="field">
+
+                            <label for="income">
+                                Annual Family Income
+                            </label>
+
+                            <div class="stepper-input-wrap">
+                                <input
+                                    type="number"
+                                    id="income"
+                                    name="income"
+                                    min="0"
+                                    step="any"
+                                    placeholder="Enter any income (e.g. 185000)"
+                                    value="180000"
+                                    required
+                                    oninput="formatINR('income', 'incomePreview')"
+                                    onkeydown="handleArrowKeys(event, 'income', 'incomePreview')"
+                                >
+                                <div class="stepper-controls">
+                                    <button type="button" class="stepper-btn" onclick="stepAmount('income', 'incomePreview', 100000)" title="Add ₹1,00,000">▲</button>
+                                    <button type="button" class="stepper-btn" onclick="stepAmount('income', 'incomePreview', -100000)" title="Subtract ₹1,00,000">▼</button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="preview"
+                                id="incomePreview">
+                                ≈ ₹ 1,80,000
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- TARGET GROUP -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        Target Group
+                    </div>
+
+                    <div class="segmented">
+
+                        <button
+                            type="button"
+                            id="btnSC"
+                            class="active"
+                            onclick="selectCategory('SC')">
+
+                            SC
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnOther"
+                            onclick="selectCategory('Other')">
+
+                            Other
+
+                        </button>
+
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="target_group"
+                        id="target_group"
+                        value="SC"
+                        required
+                    >
+                    <input
+                        type="hidden"
+                        name="category"
+                        id="category"
+                        value="SC"
+                        required
+                    >
+
+                </div>
+
+                <!-- ACADEMIC STATUS -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        Academic Status
+                    </div>
+
+                    <div class="segmented">
+
+                        <button
+                            type="button"
+                            id="studentBtn"
+                            onclick="selectStatus('student')">
+
+                            Currently a Student
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="nonStudentBtn"
+                            class="active"
+                            onclick="selectStatus('not_student')">
+
+                            Non-Student / Professional
+
+                        </button>
+
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="education_status"
+                        id="education_status"
+                        value="not_student"
+                        required
+                    >
+
+                </div>
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="submit-btn">
+
+                    Find Suitable Credit Schemes
+
+                </button>
+
+            </form>
+
         </div>
 
-
-        <form action="/recommend" method="POST">
-
-            <!-- DOMAIN -->
-            <div class="section">
-
-                <div class="section-title">
-                    Select Your Requirement
-                </div>
-
-                <div class="domain-options">
-
-                    <button
-                        type="button"
-                        class="domain-btn active"
-                        id="businessBtn"
-                        onclick="selectDomain('business')">
-
-                        <strong>Business Enterprise</strong>
-                        <span>
-                            Loans and financial support for business activities
-                        </span>
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="domain-btn"
-                        id="educationBtn"
-                        onclick="selectDomain('education')">
-
-                        <strong>Higher Education</strong>
-                        <span>
-                            Financial assistance for higher education
-                        </span>
-
-                    </button>
-
-                </div>
-
-                <input
-                    type="hidden"
-                    name="project_type"
-                    id="project_type"
-                    value="business"
-                    required
-                >
-
-            </div>
-
-
-            <!-- FINANCIAL DETAILS -->
-
-            <div class="section">
-
-                <div class="section-title">
-                    Financial Details
-                </div>
-
-                <div class="form-grid">
-
-                    <!-- PROJECT COST -->
-                    <div class="field">
-
-                        <label for="cost">
-                            Estimated Project Outlay
-                        </label>
-
-                        <input
-                            type="number"
-                            id="cost"
-                            name="cost"
-                            min="0"
-                            step="100000"
-                            placeholder="e.g. 500000"
-                            required
-                            oninput="formatINR('cost', 'costPreview')"
-                        >
-
-                        <div
-                            class="preview"
-                            id="costPreview">
-                        </div>
-
-                    </div>
-
-
-                    <!-- FAMILY INCOME -->
-                    <div class="field">
-
-                        <label for="income">
-                            Annual Family Income
-                        </label>
-
-                        <input
-                            type="number"
-                            id="income"
-                            name="income"
-                            min="0"
-                            step="100000"
-                            placeholder="e.g. 300000"
-                            required
-                            oninput="formatINR('income', 'incomePreview')"
-                        >
-
-                        <div
-                            class="preview"
-                            id="incomePreview">
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- TARGET GROUP -->
-
-            <div class="section">
-
-                <div class="section-title">
-                    Target Group
-                </div>
-
-                <div class="segmented">
-
-                    <button
-                        type="button"
-                        id="btnSC"
-                        class="active"
-                        onclick="selectCategory('SC')">
-
-                        SC
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="btnOther"
-                        onclick="selectCategory('Other')">
-
-                        Other
-
-                    </button>
-
-                </div>
-
-                <input
-                    type="hidden"
-                    name="category"
-                    id="category"
-                    value="SC"
-                    required
-                >
-
-            </div>
-
-
-            <!-- ACADEMIC STATUS -->
-
-            <div class="section">
-
-                <div class="section-title">
-                    Academic Status
-                </div>
-
-                <div class="segmented">
-
-                    <button
-                        type="button"
-                        id="studentBtn"
-                        onclick="selectStatus('student')">
-
-                        Currently a Student
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="nonStudentBtn"
-                        class="active"
-                        onclick="selectStatus('not_student')">
-
-                        Non-Student / Professional
-
-                    </button>
-
-                </div>
-
-                <input
-                    type="hidden"
-                    name="education_status"
-                    id="education_status"
-                    value="not_student"
-                    required
-                >
-
-            </div>
-
-
-            <!-- SUBMIT -->
-
-            <button
-                type="submit"
-                class="submit-btn">
-
-                Find Suitable Credit Schemes
-
-            </button>
-
-        </form>
+        <!-- FOOTER -->
+
+        <div class="footer">
+            🛡️ Zero Intermediaries • Verified DBT Framework
+            <br>
+            <strong>MAISSA Credit Core</strong>
+        </div>
 
     </div>
 
+    <script>
 
-    <!-- FOOTER -->
+        // DOMAIN SELECTION
+        function selectDomain(val) {
+            document.getElementById('project_type').value = val;
 
-    <div class="footer">
-        🛡️ Zero Intermediaries • Verified DBT Framework
-        <br>
-        <strong>MAISSA Credit Core</strong>
-    </div>
-
-</div>
-
-
-<script>
-
-    // ----------------------------------------
-    // DOMAIN SELECTION
-    // ----------------------------------------
-
-    function selectDomain(val) {
-
-        document.getElementById('project_type').value = val;
-
-        document
-            .getElementById('businessBtn')
-            .classList.toggle(
-                'active',
-                val === 'business'
-            );
-
-        document
-            .getElementById('educationBtn')
-            .classList.toggle(
-                'active',
-                val === 'education'
-            );
-    }
-
-
-    // ----------------------------------------
-    // TARGET GROUP SELECTION
-    // ----------------------------------------
-
-    function selectCategory(val) {
-
-        document.getElementById('category').value = val;
-
-        document
-            .getElementById('btnSC')
-            .classList.toggle(
-                'active',
-                val === 'SC'
-            );
-
-        document
-            .getElementById('btnOther')
-            .classList.toggle(
-                'active',
-                val === 'Other'
-            );
-    }
-
-
-    // ----------------------------------------
-    // EDUCATION STATUS
-    // ----------------------------------------
-
-    function selectStatus(val) {
-
-        document
-            .getElementById('education_status')
-            .value = val;
-
-        document
-            .getElementById('studentBtn')
-            .classList.toggle(
-                'active',
-                val === 'student'
-            );
-
-        document
-            .getElementById('nonStudentBtn')
-            .classList.toggle(
-                'active',
-                val === 'not_student'
-            );
-    }
-
-
-    // ----------------------------------------
-    // INR PREVIEW
-    // ----------------------------------------
-
-    function formatINR(inputId, previewId) {
-
-        const value =
-            document.getElementById(inputId).value;
-
-        const preview =
-            document.getElementById(previewId);
-
-        if (value && Number(value) >= 0) {
-
-            const formatted =
-                Number(value).toLocaleString(
-                    'en-IN'
+            document
+                .getElementById('businessBtn')
+                .classList.toggle(
+                    'active',
+                    val === 'business'
                 );
 
-            preview.textContent =
-                '≈ ₹ ' + formatted;
-
-        } else {
-
-            preview.textContent = '';
-
+            document
+                .getElementById('educationBtn')
+                .classList.toggle(
+                    'active',
+                    val === 'education'
+                );
         }
-    }
 
-</script>
+        // TARGET GROUP SELECTION
+        function selectCategory(val) {
+            document.getElementById('category').value = val;
+            document.getElementById('target_group').value = val;
+
+            document
+                .getElementById('btnSC')
+                .classList.toggle(
+                    'active',
+                    val === 'SC'
+                );
+
+            document
+                .getElementById('btnOther')
+                .classList.toggle(
+                    'active',
+                    val === 'Other'
+                );
+        }
+
+        // EDUCATION STATUS
+        function selectStatus(val) {
+            document
+                .getElementById('education_status')
+                .value = val;
+
+            document
+                .getElementById('studentBtn')
+                .classList.toggle(
+                    'active',
+                    val === 'student'
+                );
+
+            document
+                .getElementById('nonStudentBtn')
+                .classList.toggle(
+                    'active',
+                    val === 'not_student'
+                );
+        }
+
+        // STEPPER LOGIC: Increments/decrements by 1,00,000 without restricting manual typed input
+        function stepAmount(inputId, previewId, delta) {
+            const input = document.getElementById(inputId);
+            let current = parseFloat(input.value) || 0;
+            let updated = current + delta;
+            if (updated < 0) updated = 0;
+            input.value = updated;
+            formatINR(inputId, previewId);
+        }
+
+        // KEYBOARD ARROW CONTROLS: Arrow Up/Down increases or decreases by 1,00,000
+        function handleArrowKeys(e, inputId, previewId) {
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                stepAmount(inputId, previewId, 100000);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                stepAmount(inputId, previewId, -100000);
+            }
+        }
+
+        // INR PREVIEW
+        function formatINR(inputId, previewId) {
+            const value = document.getElementById(inputId).value;
+            const preview = document.getElementById(previewId);
+
+            if (value !== '' && !isNaN(Number(value)) && Number(value) >= 0) {
+                const formatted = Number(value).toLocaleString('en-IN');
+                preview.textContent = '≈ ₹ ' + formatted;
+            } else {
+                preview.textContent = '';
+            }
+        }
+
+        // Initialize formatting on load
+        window.addEventListener('DOMContentLoaded', () => {
+            formatINR('cost', 'costPreview');
+            formatINR('income', 'incomePreview');
+        });
+
+    </script>
 
 </body>
 </html>

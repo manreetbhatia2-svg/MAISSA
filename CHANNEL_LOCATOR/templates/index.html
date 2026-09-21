@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Channel Partner Locator</title>
+  <title>Smart Channel Partner Locator | MAISSA</title>
  
   <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -50,11 +50,83 @@
 
     body {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       width: 100vw;
       overflow: hidden;
       background: var(--lavender-bg);
       color: var(--text-main);
+    }
+
+    /* Top Global Ecosystem Navigation */
+    .global-nav {
+      height: 56px;
+      background: #161538;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      z-index: 99999;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-badge {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--accent-lavender));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .brand-name {
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-link-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.2s ease;
+    }
+
+    .nav-link-btn.active, .nav-link-btn:hover {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+    }
+
+    /* Workspace Body Container */
+    .workspace-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 56px);
+      width: 100vw;
+      overflow: hidden;
       position: relative;
     }
 
@@ -65,11 +137,11 @@
       max-width: 92vw;
       height: 100%;
       overflow-y: auto;
-      padding: 24px 22px;
+      padding: 22px 20px;
       background: var(--sidebar-bg);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       z-index: 10;
       box-shadow: 6px 0 24px rgba(22, 21, 56, 0.4);
       flex-shrink: 0;
@@ -97,7 +169,7 @@
     .resizer-handle:hover, .resizer-handle.dragging { background: rgba(129, 140, 248, 0.35); }
     .resizer-pill { width: 4px; height: 48px; background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
 
-    /* Brand Header */
+    /* Internal Brand Header */
     .brand-header {
       display: flex;
       align-items: center;
@@ -137,12 +209,12 @@
     .control-panel {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-subtle);
-      padding: 15px; border-radius: 14px;
+      padding: 14px; border-radius: 14px;
       display: flex; flex-direction: column; gap: 10px;
     }
 
     .btn-detect {
-      width: 100%; padding: 11px 16px; background: var(--primary-blue);
+      width: 100%; padding: 10px 16px; background: var(--primary-blue);
       color: #FFFFFF; border: none; border-radius: 12px; font-size: 12.5px;
       font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
       box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); transition: all 0.25s ease;
@@ -187,7 +259,7 @@
     .partner-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .partner-dist-line { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-top: 6px; display: flex; align-items: center; gap: 4px; }
 
-    /* Circular Score Indicator */
+    /* Circular Match Score */
     .circle-score-wrap { position: relative; width: 54px; height: 54px; flex-shrink: 0; }
     .circle-score-wrap svg { transform: rotate(-90deg); width: 54px; height: 54px; }
     .circle-score-wrap circle { fill: none; stroke-width: 4.5; stroke-linecap: round; }
@@ -206,16 +278,19 @@
     .partner-specs div { color: var(--text-muted); }
     .partner-specs strong { display: block; font-size: 12.5px; color: var(--text-main); font-weight: 800; margin-top: 2px; }
 
-    .card-actions { display: flex; gap: 8px; }
+    /* Integrated Action Strip */
+    .card-actions { display: flex; gap: 6px; }
     .action-btn {
-      flex: 1; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
+      flex: 1; padding: 8px 10px; border-radius: 10px; font-size: 11.5px; font-weight: 700;
       border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-      gap: 5px; transition: all 0.2s; text-decoration: none;
+      gap: 4px; transition: all 0.2s; text-decoration: none;
     }
     .btn-route-app { background: var(--primary-blue); color: #FFFFFF; }
     .btn-route-app:hover { background: var(--primary-hover); }
     .btn-view-details { background: var(--lavender-subtle); color: var(--sidebar-bg); border: 1px solid #CBD5E1; }
     .btn-view-details:hover { background: #E2E8F0; }
+    .btn-calc-emi { background: #EEF2FF; color: var(--primary-blue); border: 1px solid #C7D2FE; }
+    .btn-calc-emi:hover { background: #E0E7FF; transform: translateY(-1px); }
 
     /* "Why this Partner?" Drawer */
     .why-drawer {
@@ -230,7 +305,7 @@
     .tag-item { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #F1F5F9; color: var(--text-main); border: 1px solid var(--border-light); font-weight: 600; }
     .tag-item.active { background: #EEF2FF; color: var(--primary-blue); border-color: var(--accent-periwinkle); font-weight: 700; }
 
-    /* AI Review Briefing Component */
+    /* AI Institutional Advisory Box */
     .ai-review-wrapper {
       margin-top: 14px;
       padding-top: 12px;
@@ -344,107 +419,124 @@
 </head>
 <body>
 
-  <aside class="sidebar" id="appSidebar">
-    <div class="resizer-handle" id="resizerHandle" title="Drag to resize panel over map">
-      <div class="resizer-pill"></div>
+  <!-- Top Ecosystem Navigation -->
+  <nav class="global-nav">
+    <a href="http://127.0.0.1:5000" class="brand-group">
+      <div class="brand-badge">M</div>
+      <span class="brand-name">MAISSA <span style="font-size: 11px; color: var(--accent-lavender); font-weight: 600;">Ecosystem</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="http://127.0.0.1:5000" class="nav-link-btn">1. Scheme Matcher</a>
+      <a href="/locator" class="nav-link-btn active">2. Channel Locator</a>
+      <a href="http://127.0.0.1:5000/calculator/" class="nav-link-btn">3. EMI Calculator</a>
     </div>
+  </nav>
 
-    <!-- Header -->
-    <div class="brand-header">
-      <div class="brand-info">
-        <div class="emblem-icon">⚡</div>
-        <div>
-          <h2 class="brand-title">Smart Channel Locator</h2>
-          <span class="brand-subtitle">Social Credit Scheme Matching</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Beneficiary View Container -->
-    <div id="beneficiaryViewContainer" style="display: flex; flex-direction: column; gap: 14px;">
-     
-      <!-- Top Metrics Summary Strip -->
-      <div class="dashboard-metrics">
-        <div class="metric-pill">
-          <div class="label">Total Found</div>
-          <div class="value" id="sumFound">6 Partners</div>
-        </div>
-        <div class="metric-pill">
-          <div class="label">Verified Status</div>
-          <div class="value green" id="sumEligible">6 Verified</div>
-        </div>
-        <div class="metric-pill">
-          <div class="label">Nearest</div>
-          <div class="value lavender" id="sumNearest">1.77 km</div>
-        </div>
+  <div class="workspace-container">
+    <aside class="sidebar" id="appSidebar">
+      <div class="resizer-handle" id="resizerHandle" title="Drag to resize panel over map">
+        <div class="resizer-pill"></div>
       </div>
 
-      <!-- Search & Filters -->
-      <div class="control-panel">
-        <button class="btn-detect" onclick="locateUser()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="2" x2="12" y2="6"></line>
-            <line x1="12" y1="18" x2="12" y2="22"></line>
-            <line x1="2" y1="12" x2="6" y2="12"></line>
-            <line x1="18" y1="12" x2="22" y2="12"></line>
-          </svg>
-          Detect Current GPS Location
-        </button>
-        <p id="locText" style="font-size:11px; color:#94A3B8; text-align:center;">Position: Default (Pune Central)</p>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <!-- Header -->
+      <div class="brand-header">
+        <div class="brand-info">
+          <div class="emblem-icon">⚡</div>
           <div>
-            <div style="font-size:10.5px; color:#94A3B8; font-weight:700; margin-bottom:4px;">TARGET SCHEME</div>
-            <select id="schemeSelect" onchange="loadPartners()">
-              <option value="">All Schemes</option>
-              <option value="MFS">MFS (Micro Finance)</option>
-              <option value="Term Loan">Term Loan</option>
-              <option value="Educational Loan Scheme">Education Loan</option>
-              <option value="Aajeevika Micro-Finance Yojana">Aajeevika Micro-Finance</option>
-              <option value="MSY">Mahila Samriddhi (MSY)</option>
-            </select>
-          </div>
-          <div>
-            <div style="font-size:10.5px; color:#94A3B8; font-weight:700; margin-bottom:4px;">SEARCH RADIUS</div>
-            <select id="radiusSelect" onchange="loadPartners()">
-              <option value="all">Any Distance</option>
-              <option value="5">Within 5 km</option>
-              <option value="10" selected>Within 10 km</option>
-              <option value="25">Within 25 km</option>
-            </select>
+            <h2 class="brand-title">Smart Channel Locator</h2>
+            <span class="brand-subtitle">Affirmative Credit Channel Partner Matching</span>
           </div>
         </div>
       </div>
 
-      <!-- Partner Cards Output List -->
-      <div id="resultsList"></div>
-    </div>
-  </aside>
+      <!-- Beneficiary View Container -->
+      <div id="beneficiaryViewContainer" style="display: flex; flex-direction: column; gap: 14px;">
+       
+        <!-- Top Metrics Summary Strip -->
+        <div class="dashboard-metrics">
+          <div class="metric-pill">
+            <div class="label">Total Found</div>
+            <div class="value" id="sumFound">6 Partners</div>
+          </div>
+          <div class="metric-pill">
+            <div class="label">Verified Status</div>
+            <div class="value green" id="sumEligible">6 Verified</div>
+          </div>
+          <div class="metric-pill">
+            <div class="label">Nearest</div>
+            <div class="value lavender" id="sumNearest">1.77 km</div>
+          </div>
+        </div>
 
-  <!-- Leaflet Map Canvas -->
-  <main id="map-container">
-    <div id="map"></div>
+        <!-- Search & Filters -->
+        <div class="control-panel">
+          <button class="btn-detect" onclick="locateUser()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="2" x2="12" y2="6"></line>
+              <line x1="12" y1="18" x2="12" y2="22"></line>
+              <line x1="2" y1="12" x2="6" y2="12"></line>
+              <line x1="18" y1="12" x2="22" y2="12"></line>
+            </svg>
+            Detect Current GPS Location
+          </button>
+          <p id="locText" style="font-size:11px; color:#94A3B8; text-align:center;">Position: Default (Pune Central)</p>
 
-    <!-- Road Route Floating HUD -->
-    <div id="route-summary-hud">
-      <h5 id="hud-partner-name">Destination</h5>
-      <div class="hud-metrics">
-        <span>Road Distance: <strong id="hud-distance">0 km</strong></span>
-        <span>Est. Drive: <strong id="hud-duration">0 min</strong></span>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <div style="font-size:10.5px; color:#94A3B8; font-weight:700; margin-bottom:4px;">TARGET SCHEME</div>
+              <select id="schemeSelect" onchange="loadPartners()">
+                  <option value="">All Schemes</option>
+                  <option value="Micro Finance Scheme (MFS)">Micro Finance Scheme (MFS)</option>
+                  <option value="Aajeevika Micro-Finance Yojana (AMY)">Aajeevika Micro-Finance Yojana (AMY)</option>
+                  <option value="Term Loan (TL)">Term Loan (TL)</option>
+                  <option value="Udyam Nidhi Yojana (UNY)">Udyam Nidhi Yojana (UNY)</option>
+                  <option value="Educational Loan Scheme (ELS)">Educational Loan Scheme (ELS)</option>
+                  <option value="Pre-Matric Scholarship for Children of Parents Engaged in Unclean Occupations">Pre-Matric Scholarship for Children of Parents Engaged in Unclean Occupations</option>
+                  <option value="Government of India Post-Matric Scholarship">Government of India Post-Matric Scholarship</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:10.5px; color:#94A3B8; font-weight:700; margin-bottom:4px;">SEARCH RADIUS</div>
+              <select id="radiusSelect" onchange="loadPartners()">
+                <option value="all">Any Distance</option>
+                <option value="5">Within 5 km</option>
+                <option value="10" selected>Within 10 km</option>
+                <option value="25">Within 25 km</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Partner Cards Output List -->
+        <div id="resultsList"></div>
       </div>
-      <button class="btn-hud-close" onclick="clearCurrentRoute()">✕ Clear Route</button>
-    </div>
+    </aside>
 
-    <!-- Map Color Legend -->
-    <div class="map-legend">
-      <div class="legend-row"><span class="legend-dot" style="background:#4F46E5;"></span> Public Sector Banks (PSB)</div>
-      <div class="legend-row"><span class="legend-dot" style="background:#10B981;"></span> State Channelizing Agencies (SCA)</div>
-      <div class="legend-row"><span class="legend-dot" style="background:#9333EA;"></span> NBFC-MFIs</div>
-      <div class="legend-row"><span class="legend-dot" style="background:#EA580C;"></span> Regional Rural Banks (RRB)</div>
-      <div class="legend-row"><span class="legend-dot" style="background:#06B6D4; border: 2px solid white;"></span> Your Location</div>
-    </div>
-  </main>
+    <!-- Leaflet Map Canvas -->
+    <main id="map-container">
+      <div id="map"></div>
+
+      <!-- Road Route Floating HUD -->
+      <div id="route-summary-hud">
+        <h5 id="hud-partner-name">Destination</h5>
+        <div class="hud-metrics">
+          <span>Road Distance: <strong id="hud-distance">0 km</strong></span>
+          <span>Est. Drive: <strong id="hud-duration">0 min</strong></span>
+        </div>
+        <button class="btn-hud-close" onclick="clearCurrentRoute()">✕ Clear Route</button>
+      </div>
+
+      <!-- Map Color Legend -->
+      <div class="map-legend">
+        <div class="legend-row"><span class="legend-dot" style="background:#4F46E5;"></span> Public Sector Banks (PSB)</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#10B981;"></span> State Channelizing Agencies (SCA)</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#9333EA;"></span> NBFC-MFIs</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#EA580C;"></span> Regional Rural Banks (RRB)</div>
+        <div class="legend-row"><span class="legend-dot" style="background:#06B6D4; border: 2px solid white;"></span> Your Location</div>
+      </div>
+    </main>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
@@ -551,7 +643,7 @@
 
         const route = data.routes[0];
         const distanceKm = (route.distance / 1000).toFixed(1);
-        const durationMin = Math.round(route.duration / 60);
+        const durationMin = Math.round(distanceKm * 3.5); // CHANGED THIS LINE for realistic city speeds
 
         document.getElementById("hud-distance").innerText = `${distanceKm} km`;
         document.getElementById("hud-duration").innerText = `~${durationMin} mins`;
@@ -590,7 +682,7 @@
       }
     }
 
-    /* AI Review Fetcher with Bank-Specific Payload */
+    /* AI Institutional Advisory Briefing */
     async function fetchAIReview(idx, event) {
       event.stopPropagation();
       const p = currentPartnersData[idx];
@@ -667,14 +759,14 @@
             name: "State Bank of India - Kothrud SME Branch", type: "PSB", latitude: 18.5074, longitude: 73.8077,
             address: "Paud Road, Kothrud, Pune", distance_km: 5.36, routing_score: 80.9,
             remaining_quota_lakhs: 65.0, npa_rate: 0.038, avg_disbursal_days: 24,
-            supported_schemes: ["Term Loan", "Educational Loan Scheme", "MFS"]
+            supported_schemes: ["Term Loan", "Educational Loan Scheme", "MFS", "NSFDC"]
           },
           {
             id: "p2",
             name: "Mahatma Phule Backward Class Dev Corp (MPBCDC)", type: "SCA", latitude: 18.5126, longitude: 73.8782,
             address: "Ambedkar Bhavan, Camp, Pune", distance_km: 2.8, routing_score: 78.7,
             remaining_quota_lakhs: 38.0, npa_rate: 0.045, avg_disbursal_days: 18,
-            supported_schemes: ["MFS", "Aajeevika Micro-Finance Yojana", "MSY"]
+            supported_schemes: ["MFS", "Aajeevika Micro-Finance Yojana", "MSY", "NSFDC"]
           },
           {
             id: "p3",
@@ -688,7 +780,7 @@
             name: "Bank of Baroda - Deccan Gymkhana Branch", type: "PSB", latitude: 18.5177, longitude: 73.8438,
             address: "Ashok Chambers, Jangali Maharaj Rd, Pune", distance_km: 2.1, routing_score: 77.2,
             remaining_quota_lakhs: 42.0, npa_rate: 0.041, avg_disbursal_days: 20,
-            supported_schemes: ["Term Loan", "MFS", "Educational Loan Scheme"]
+            supported_schemes: ["Term Loan", "MFS", "Educational Loan Scheme", "NSFDC"]
           },
           {
             id: "p5",
@@ -707,6 +799,14 @@
         ];
       }
 
+      // Filter by scheme if selected
+      if (scheme) {
+        partners = partners.filter(p => 
+          p.supported_schemes && p.supported_schemes.some(s => s.toLowerCase().includes(scheme.toLowerCase()) || scheme.toLowerCase().includes(s.toLowerCase()))
+        );
+      }
+
+      // Filter by radius
       if (radius !== "all") {
         const maxDist = parseFloat(radius);
         partners = partners.filter(p => p.distance_km <= maxDist);
@@ -773,6 +873,10 @@
 
         const badgeClass = pType === "PSB" ? "pill-type-psb" : (pType === "SCA" ? "pill-type-sca" : (pType === "NBFC-MFI" ? "pill-type-mfi" : "pill-type-rrb"));
 
+        // Derived loan amount for deep link calculation
+        const linkAmount = p.remaining_quota_lakhs ? Math.min(p.remaining_quota_lakhs * 100000, 500000) : 500000;
+        const linkScheme = scheme || (p.supported_schemes ? p.supported_schemes[0] : "Affirmative Credit");
+
         card.innerHTML = `
           <div class="top-badge-strip">
             <div>
@@ -818,8 +922,11 @@
               Why this Partner? ▾
             </button>
             <button class="action-btn btn-route-app" onclick="highlightAndRoute(${idx}, ${p.latitude}, ${p.longitude}, '${p.name.replace(/'/g, "\\'")}')">
-              Get Directions →
+              Directions →
             </button>
+            <a href="http://127.0.0.1:5000/calculator//?amount=${linkAmount}&scheme=${encodeURIComponent(linkScheme)}&interest=4.0" target="_blank" class="action-btn btn-calc-emi">
+              🧮 EMI ↗
+            </a>
           </div>
 
           <div class="why-drawer" id="why-${idx}">
@@ -881,6 +988,31 @@
 
     window.onload = () => {
       initMap();
+
+      // Read incoming scheme query parameter from Recommender
+      const urlParams = new URLSearchParams(window.location.search);
+      const passedScheme = urlParams.get('scheme');
+      if (passedScheme) {
+        const select = document.getElementById("schemeSelect");
+        let matched = false;
+        for (let i = 0; i < select.options.length; i++) {
+          const optVal = select.options[i].value.toLowerCase();
+          const target = passedScheme.toLowerCase();
+          if (optVal && (optVal.includes(target) || target.includes(optVal))) {
+            select.selectedIndex = i;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          const newOpt = document.createElement("option");
+          newOpt.value = passedScheme;
+          newOpt.text = passedScheme;
+          newOpt.selected = true;
+          select.appendChild(newOpt);
+        }
+      }
+
       loadPartners();
     };
   </script>
