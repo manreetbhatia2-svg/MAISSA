@@ -124,20 +124,20 @@ export default function App() {
             2. Channel Locator
           </a>
           <a
-            href="http://127.0.0.1:5000/calculator/"
-            style={{
-              padding: "6px 14px",
-              borderRadius: "8px",
-              fontSize: "12px",
-              fontWeight: 700,
-              textDecoration: "none",
-              color: "#FFFFFF",
-              background: "#4F46E5",
-              border: "1px solid #4F46E5",
-            }}
-          >
-            3. EMI Calculator
-          </a>
+  href="/calculator/"
+  style={{
+    padding: "6px 14px",
+    borderRadius: "8px",
+    fontSize: "12px",
+    fontWeight: 700,
+    textDecoration: "none",
+    color: "#FFFFFF",
+    background: "#4F46E5",
+    border: "1px solid #4F46E5",
+  }}
+>
+  3. EMI Calculator
+</a>
         </div>
       </nav>
 
